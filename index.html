@@ -200,6 +200,180 @@
             
             
               
+                <a class="post-title-link" href="/2015/10/21/2015-10-21-Create-a-learning-switch-in-pox/" itemprop="url">
+                  Untitled
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-21T17:33:41+08:00" content="2015-10-21">
+              2015-10-21
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <h1 id="基于POX实现L2_learning_switch模块">基于POX实现L2 learning switch模块</h1><h2 id="实现一个hub">实现一个hub</h2><p>实现一个hub很简单，就是在controller收到packet-in时通过openflow packet-out从其他端口转发出去，下面测试下HUB 的行为：</p>
+<p>通过xterm为h1,h2,h3开启一个终端，然后使用tcpdump抓取数据包，然后在h1中ping，可以清晰的看到数据包的流动，ARP，icmp echo request, icmp echo reply这个包，h2 h3都会收到，也就是对于任何pakcet都会触发pakcet-in,然后通过广播传出其他端口，这就是hub的工作方式。</p>
+<p><img src="/assets/mininet/hub-behavior.png" alt=""></p>
+<p>如果在h1中ping一个不存在的主机，那么就会询问3次，“who has 10.0.0.5 tell 10.0.0.1”,仍没有回应，就是丢包的象征。</p>
+<p><img src="/assets/mininet/hub-behavior-2.png" alt=""></p>
+<h2 id="实现L2_learning_switch">实现L2 learning switch</h2><p>想清晰了不难，重点是学习pox中的API，多动手。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""</span><br><span class="line">This component is for use with the OpenFlow tutorial.</span><br><span class="line"></span><br><span class="line">It acts as a simple hub, but can be modified to act like an L2</span><br><span class="line">learning switch.</span><br><span class="line"></span><br><span class="line">It's roughly similar to the one Brandon Heller did for NOX.</span><br><span class="line">"""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pox.core <span class="keyword">import</span> core</span><br><span class="line"><span class="keyword">import</span> pox.openflow.libopenflow_01 <span class="keyword">as</span> of</span><br><span class="line"></span><br><span class="line">log = core.getLogger()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Tutorial</span> <span class="params">(object)</span>:</span></span><br><span class="line">  <span class="string">"""</span><br><span class="line">  A Tutorial object is created for each switch that connects.</span><br><span class="line">  A Connection object for that switch is passed to the __init__ function.</span><br><span class="line">  """</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span> <span class="params">(self, connection)</span>:</span></span><br><span class="line">    <span class="comment"># Keep track of the connection to the switch so that we can</span></span><br><span class="line">    <span class="comment"># send it messages!</span></span><br><span class="line">    self.connection = connection</span><br><span class="line"></span><br><span class="line">    <span class="comment"># This binds our PacketIn event listener</span></span><br><span class="line">    connection.addListeners(self)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Use this table to keep track of which ethernet address is on</span></span><br><span class="line">    <span class="comment"># which switch port (keys are MACs, values are ports).</span></span><br><span class="line">    self.mac_to_port = &#123;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">resend_packet</span> <span class="params">(self, packet_in, out_port)</span>:</span></span><br><span class="line">    <span class="string">"""</span><br><span class="line">    Instructs the switch to resend a packet that it had sent to us.</span><br><span class="line">    "packet_in" is the ofp_packet_in object the switch had sent to the</span><br><span class="line">    controller due to a table-miss.</span><br><span class="line">    """</span></span><br><span class="line">    msg = of.ofp_packet_out()</span><br><span class="line">    msg.data = packet_in</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Add an action to send to the specified port</span></span><br><span class="line">    action = of.ofp_action_output(port = out_port)</span><br><span class="line">    msg.actions.append(action)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Send openflow message to a switch</span></span><br><span class="line">    self.connection.send(msg)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">act_like_hub</span> <span class="params">(self, packet, packet_in)</span>:</span></span><br><span class="line">    <span class="string">"""</span><br><span class="line">    Implement hub-like behavior -- send all packets to all ports besides</span><br><span class="line">    the input port.</span><br><span class="line">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># We want to output to all ports -- we do that using the special</span></span><br><span class="line">    <span class="comment"># OFPP_ALL port as the output port.  (We could have also used</span></span><br><span class="line">    <span class="comment"># OFPP_FLOOD.)</span></span><br><span class="line">    self.resend_packet(packet_in, of.OFPP_ALL)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Note that if we didn't get a valid buffer_id, a slightly better</span></span><br><span class="line">    <span class="comment"># implementation would check that we got the full data before</span></span><br><span class="line">    <span class="comment"># sending it (len(packet_in.data) should be == packet_in.total_len)).</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">act_like_switch</span> <span class="params">(self, packet, packet_in)</span>:</span></span><br><span class="line">    <span class="string">"""</span><br><span class="line">    Implement switch-like behavior.</span><br><span class="line">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Here's some psuedocode to start you off implementing a learning</span></span><br><span class="line">    <span class="comment"># switch.  You'll need to rewrite it as real Python code.</span></span><br><span class="line"></span><br><span class="line">    log.debug(<span class="string">'Packet from &#123;&#125; to &#123;&#125; from port &#123;&#125;'</span>.format(packet.src, packet.dst, packet_in.in_port))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Learn the port for the source MAC, mac,in_port pair</span></span><br><span class="line">    self.mac_to_port[packet.src] = packet_in.in_port</span><br><span class="line">    dst_port = self.mac_to_port.get(packet.dst)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> dst_port <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">      log.debug(<span class="string">'Packet destinated to &#123;&#125; should go to port &#123;&#125;'</span>.format(packet.dst, dst_port))</span><br><span class="line"></span><br><span class="line">      <span class="comment"># Send packet out the associated port</span></span><br><span class="line">      self.resend_packet(packet_in, dst_port)</span><br><span class="line"></span><br><span class="line">      <span class="comment"># Once you have the above working, try pushing a flow entry</span></span><br><span class="line">      <span class="comment"># instead of resending the packet </span></span><br><span class="line"></span><br><span class="line">      log.debug(<span class="string">"Installing flow (&#123;&#125;,&#123;&#125;) to (&#123;&#125;,&#123;&#125;)"</span>.format(packet.src, packet_in.in_port, packet.dst, dst_port))</span><br><span class="line">      <span class="comment"># Maybe the log statement should have source/destination/port? Yes</span></span><br><span class="line"></span><br><span class="line">      msg = of.ofp_flow_mod()</span><br><span class="line">      </span><br><span class="line">      <span class="comment"># Set fields to match received packet</span></span><br><span class="line">      msg.match = of.ofp_match.from_packet(packet)</span><br><span class="line">      </span><br><span class="line">      <span class="comment">#&lt; Set other fields of flow_mod (timeouts? buffer_id?) &gt;</span></span><br><span class="line">      msg.idle_timeout = <span class="number">60</span></span><br><span class="line">      msg.match.in_port = packet_in.in_port</span><br><span class="line">      </span><br><span class="line">      <span class="comment">#&lt; Add an output action, and send -- similar to resend_packet() &gt;</span></span><br><span class="line">      action = of.ofp_action_output(port = dst_port)</span><br><span class="line">      msg.actions.append(action)</span><br><span class="line">      self.connection.send(msg)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">      <span class="comment"># Flood the packet out everything but the input port</span></span><br><span class="line">      <span class="comment"># This part looks familiar, right?</span></span><br><span class="line">      log.debug(<span class="string">'Donot know which port &#123;&#125; should go to'</span>.format(packet.dst))</span><br><span class="line">      self.resend_packet(packet_in, of.OFPP_ALL)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">_handle_PacketIn</span> <span class="params">(self, event)</span>:</span></span><br><span class="line">    <span class="string">"""</span><br><span class="line">    Handles packet in messages from the switch.</span><br><span class="line">    """</span></span><br><span class="line"></span><br><span class="line">    packet = event.parsed <span class="comment"># This is the parsed packet data.</span></span><br><span class="line">    <span class="comment">#print dir(packet) #all members of packet object</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> packet.parsed:</span><br><span class="line">      log.warning(<span class="string">"Ignoring incomplete packet"</span>)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    packet_in = event.ofp <span class="comment"># The actual ofp_packet_in message.</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Comment out the following line and uncomment the one after</span></span><br><span class="line">    <span class="comment"># when starting the exercise.</span></span><br><span class="line">    <span class="comment">#self.act_like_hub(packet, packet_in)</span></span><br><span class="line">    self.act_like_switch(packet, packet_in)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">launch</span> <span class="params">()</span>:</span></span><br><span class="line">  <span class="string">"""</span><br><span class="line">  Starts the component</span><br><span class="line">  """</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">start_switch</span> <span class="params">(event)</span>:</span></span><br><span class="line">    log.debug(<span class="string">"Controlling %s"</span> % (event.connection,))</span><br><span class="line">    Tutorial(event.connection)</span><br><span class="line"></span><br><span class="line">  <span class="comment"># When comes a switch connection, fired a ConnectionUp event.</span></span><br><span class="line">  <span class="comment"># THe Connection object is the channel between switch and controller </span></span><br><span class="line">  core.openflow.addListenerByName(<span class="string">"ConnectionUp"</span>, start_switch)</span><br></pre></td></tr></table></figure>
+<p>测试,可以看到时间对比</p>
+<p><img src="/assets/mininet/of_tutorial_switch_1.png" alt=""></p>
+<p><img src="/assets/mininet/of_tutorial_switch_2.png" alt=""></p>
+<p>参考</p>
+<p><a href="">openflow-tutorial</a></p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/10/21/2015-10-21-Mininet-Everyday_Usage/" itemprop="url">
+                  Untitled
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-21T15:07:09+08:00" content="2015-10-21">
+              2015-10-21
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <hr>
+<hr>
+<h1 id="Mininet_Everyday_Usage">Mininet Everyday Usage</h1><p>sudo mn</p>
+<p>默认建立最小尺寸的拓扑，相当于指定 –topo=minimal, 俩主机通过一个OF交换机相连， 使用自带的控制器。</p>
+<h2 id="Mininet_CLI常用命令：">Mininet CLI常用命令：</h2><p>nodes #展现节点</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; nodes</span><br><span class="line">available nodes are: </span><br><span class="line">c0 <span class="tag">h1</span> <span class="tag">h2</span> s1</span><br></pre></td></tr></table></figure>
+<p>net # 展现网络链接</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; net</span><br><span class="line">h1 h1-<span class="string">eth0:</span>s1-eth1</span><br><span class="line">h2 h2-<span class="string">eth0:</span>s1-eth2</span><br><span class="line">s1 <span class="string">lo:</span>  s1-<span class="string">eth1:</span>h1-eth0 s1-<span class="string">eth2:</span>h2-eth0</span><br><span class="line">c0</span><br></pre></td></tr></table></figure>
+<p>dump #各个节点的信息</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; dump</span><br><span class="line">&lt;Host h1: h1-eth0:<span class="number">10.0</span><span class="number">.0</span><span class="number">.1</span> pid=<span class="number">3088</span>&gt; </span><br><span class="line">&lt;Host h2: h2-eth0:<span class="number">10.0</span><span class="number">.0</span><span class="number">.2</span> pid=<span class="number">3090</span>&gt; </span><br><span class="line">&lt;OVSSwitch s1: lo:<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>,s1-eth1:None,s1-eth2:None pid=<span class="number">3095</span>&gt; </span><br><span class="line">&lt;Controller c0: <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6633</span> pid=<span class="number">3081</span>&gt;</span><br></pre></td></tr></table></figure>
+<p>如果第一个参数是主机名，交换机名，或者控制器名，那么表示后面的命令在对应的节点上执行。比如 h1 ifconfig -a 会显示出h1主机网络命名空间的接口信息。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; h1 ifconfig -a</span><br><span class="line">h1-eth0   Link encap:Ethernet  HWaddr <span class="number">4</span>a:<span class="number">2</span>b:e3:ff:d5:<span class="number">48</span>  </span><br><span class="line">          inet addr:<span class="number">10.0</span><span class="number">.0</span><span class="number">.1</span>  Bcast:<span class="number">10.255</span><span class="number">.255</span><span class="number">.255</span>  Mask:<span class="number">255.0</span><span class="number">.0</span><span class="number">.0</span></span><br><span class="line">          inet6 addr: fe80::<span class="number">482</span>b:e3ff:feff:d548/<span class="number">64</span> Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:<span class="number">1500</span>  Metric:<span class="number">1</span></span><br><span class="line">          RX packets:<span class="number">40</span> errors:<span class="number">0</span> dropped:<span class="number">0</span> overruns:<span class="number">0</span> frame:<span class="number">0</span></span><br><span class="line">          TX packets:<span class="number">14</span> errors:<span class="number">0</span> dropped:<span class="number">0</span> overruns:<span class="number">0</span> carrier:<span class="number">0</span></span><br><span class="line">          collisions:<span class="number">0</span> txqueuelen:<span class="number">1000</span> </span><br><span class="line">          RX bytes:<span class="number">5659</span> (<span class="number">5.6</span> KB)  TX bytes:<span class="number">1028</span> (<span class="number">1.0</span> KB)</span><br><span class="line"></span><br><span class="line">lo        Link encap:Local Loopback  </span><br><span class="line">          inet addr:<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>  Mask:<span class="number">255.0</span><span class="number">.0</span><span class="number">.0</span></span><br><span class="line">          inet6 addr: ::<span class="number">1</span>/<span class="number">128</span> Scope:Host</span><br><span class="line">          UP LOOPBACK RUNNING  MTU:<span class="number">16436</span>  Metric:<span class="number">1</span></span><br><span class="line">          RX packets:<span class="number">0</span> errors:<span class="number">0</span> dropped:<span class="number">0</span> overruns:<span class="number">0</span> frame:<span class="number">0</span></span><br><span class="line">          TX packets:<span class="number">0</span> errors:<span class="number">0</span> dropped:<span class="number">0</span> overruns:<span class="number">0</span> carrier:<span class="number">0</span></span><br><span class="line">          collisions:<span class="number">0</span> txqueuelen:<span class="number">0</span> </span><br><span class="line">          RX bytes:<span class="number">0</span> (<span class="number">0.0</span> B)  TX bytes:<span class="number">0</span> (<span class="number">0.0</span> B)</span><br></pre></td></tr></table></figure>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/10/21/2015-6-4-Sending Signal/" itemprop="url">
                   Sending signals between processes
                 </a>
@@ -925,200 +1099,6 @@
 
 
     
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/10/21/2015-6-3-A Journal/" itemprop="url">
-                  发表了一篇不知名的期刊
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            Posted on
-            <time itemprop="dateCreated" datetime="2015-10-21T13:05:42+08:00" content="2015-10-21">
-              2015-10-21
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; In
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Research/" itemprop="url" rel="index">
-                    <span itemprop="name">Research</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>之前写的一篇期刊发表了，虽然没有那么重量级，但对于我这种不爱好科研的人来说已经够了。为了写这个东西也花了很多的时间，从看paper，看书，到不断的修改，经历了很久。</p>
-<p>在此，记录下。</p>
-<p>文章地址 </p>
-<p>###<a href="http://escj.cnic.cn/CN/Y2015/V6/I1/18" target="_blank" rel="external">大数据存储技术进展</a></p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                <a class="post-title-link" href="/2015/10/21/2015-6-2-开篇/" itemprop="url">
-                  开篇
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            Posted on
-            <time itemprop="dateCreated" datetime="2015-10-21T13:02:31+08:00" content="2015-10-21">
-              2015-10-21
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; In
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Life/" itemprop="url" rel="index">
-                    <span itemprop="name">Life</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>之前也一直在CSDN上用心写技术博客，有关于SDN，Linux环境编程，Linux内核，Java，网络编程，算法等等，对新技术充满激情，对困难不懈探索。长时间如果不搞点技术方面的东西，不写代码，会觉得少点什么。或许正是在这样的艰难行进中，自己得到了成长！<br>进入计算机领域6,7年了，但仍热只能算得上是一个Beginner，学无止境，而且也没做到学以致用。<br>今后打算在Github上管理自己的博客，发表才是最好的记忆。主要记录：</p>
-<blockquote>
-<ul>
-<li>技术感悟</li>
-<li>所见所想</li>
-<li>代码阅读</li>
-</ul>
-</blockquote>
-<p>来一张图片表达下心情</p>
-<p><img src="/assets/wheat.jpg" alt="wheat-mother"></p>
-<h3 id="CSDN博客"><a href="http://blog.csdn.net/vonzhoufz?viewmode=contents" target="_blank" rel="external">CSDN博客</a></h3>
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1161,7 +1141,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-count">12</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
