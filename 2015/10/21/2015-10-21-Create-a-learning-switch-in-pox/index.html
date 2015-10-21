@@ -34,7 +34,7 @@
 
 
 
-  <meta name="keywords" content="Hexo,next" />
+  <meta name="keywords" content="mininet,pox," />
 
 
 
@@ -46,7 +46,7 @@
 <meta name="description" content="基于POX实现L2 learning switch模块实现一个hub实现一个hub很简单，就是在controller收到packet-in时通过openflow packet-out从其他端口转发出去，下面测试下HUB 的行为：
 通过xterm为h1,h2,h3开启一个终端，然后使用tcpdump抓取数据包，然后在h1中ping，可以清晰的看到数据包的流动，ARP，icmp echo reques">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Chown's Blog">
+<meta property="og:title" content="基于POX实现L2 learning switch模块">
 <meta property="og:url" content="https://vonzhou.github.io/2015/10/21/2015-10-21-Create-a-learning-switch-in-pox/index.html">
 <meta property="og:site_name" content="Chown's Blog">
 <meta property="og:description" content="基于POX实现L2 learning switch模块实现一个hub实现一个hub很简单，就是在controller收到packet-in时通过openflow packet-out从其他端口转发出去，下面测试下HUB 的行为：
@@ -55,9 +55,9 @@
 <meta property="og:image" content="https://vonzhou.github.io/assets/mininet/hub-behavior-2.png">
 <meta property="og:image" content="https://vonzhou.github.io/assets/mininet/of_tutorial_switch_1.png">
 <meta property="og:image" content="https://vonzhou.github.io/assets/mininet/of_tutorial_switch_2.png">
-<meta property="og:updated_time" content="2015-10-21T09:33:41.000Z">
+<meta property="og:updated_time" content="2015-10-21T09:39:37.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chown's Blog">
+<meta name="twitter:title" content="基于POX实现L2 learning switch模块">
 <meta name="twitter:description" content="基于POX实现L2 learning switch模块实现一个hub实现一个hub很简单，就是在controller收到packet-in时通过openflow packet-out从其他端口转发出去，下面测试下HUB 的行为：
 通过xterm为h1,h2,h3开启一个终端，然后使用tcpdump抓取数据包，然后在h1中ping，可以清晰的看到数据包的流动，ARP，icmp echo reques">
 
@@ -71,7 +71,7 @@
 
 
 
-  <title>  | Chown's Blog </title>
+  <title> 基于POX实现L2 learning switch模块 | Chown's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="default">
@@ -206,7 +206,7 @@
             
             
               
-                
+                基于POX实现L2 learning switch模块
               
             
           </h1>
@@ -215,11 +215,26 @@
         <div class="post-meta">
           <span class="post-time">
             Posted on
-            <time itemprop="dateCreated" datetime="2015-10-21T17:33:41+08:00" content="2015-10-21">
+            <time itemprop="dateCreated" datetime="2015-10-21T17:39:37+08:00" content="2015-10-21">
               2015-10-21
             </time>
           </span>
 
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; In
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/SDN/" itemprop="url" rel="index">
+                    <span itemprop="name">SDN</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
           
 
           
@@ -257,18 +272,30 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/mininet/" rel="tag">#mininet</a>
+          
+            <a href="/tags/pox/" rel="tag">#pox</a>
+          
+        </div>
+      
 
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/10/21/2015-10-21-Mininet-Everyday_Usage/" rel="next" title="">
-                <i class="fa fa-chevron-left"></i> 
+              <a href="/2015/10/21/2015-6-4-Sending Signal/" rel="next" title="Sending signals between processes">
+                <i class="fa fa-chevron-left"></i> Sending signals between processes
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/10/21/2015-10-21-Mininet-Everyday_Usage/" rel="prev" title="Mininet Everyday Usage">
+                Mininet Everyday Usage <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -340,14 +367,14 @@
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">6</span>
+              <span class="site-state-item-count">7</span>
               <span class="site-state-item-name">categories</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-count">16</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
