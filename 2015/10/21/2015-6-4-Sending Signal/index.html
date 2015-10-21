@@ -40,23 +40,22 @@
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=0.4.5.2" />
 
 
 <meta name="description" content="In Linux, the API to send signals to process or process group is kill(..), details are as follows:
-codeblock lang:c %&amp;#125; 1#include &amp;#60;signal.h&amp;#62;&amp;#10;int kill(pid_t pid, int signo);&amp;#10;int rai">
+1234#include &amp;lt;signal.h&amp;gt;int kill(pid_t pid, int signo);int raise(int signo);    Both return: 0 i">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Sending signals between processes">
 <meta property="og:url" content="https://vonzhou.github.io/2015/10/21/2015-6-4-Sending Signal/index.html">
 <meta property="og:site_name" content="Chown's Blog">
 <meta property="og:description" content="In Linux, the API to send signals to process or process group is kill(..), details are as follows:
-codeblock lang:c %&amp;#125; 1#include &amp;#60;signal.h&amp;#62;&amp;#10;int kill(pid_t pid, int signo);&amp;#10;int rai">
-<meta property="og:image" content="https://vonzhou.github.io/!--￼3-->/images/send_signal.png">
-<meta property="og:updated_time" content="2015-10-21T05:18:20.000Z">
+1234#include &amp;lt;signal.h&amp;gt;int kill(pid_t pid, int signo);int raise(int signo);    Both return: 0 i">
+<meta property="og:updated_time" content="2015-10-21T05:34:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Sending signals between processes">
 <meta name="twitter:description" content="In Linux, the API to send signals to process or process group is kill(..), details are as follows:
-codeblock lang:c %&amp;#125; 1#include &amp;#60;signal.h&amp;#62;&amp;#10;int kill(pid_t pid, int signo);&amp;#10;int rai">
+1234#include &amp;lt;signal.h&amp;gt;int kill(pid_t pid, int signo);int raise(int signo);    Both return: 0 i">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -212,7 +211,7 @@ codeblock lang:c %&amp;#125; 1#include &amp;#60;signal.h&amp;#62;&amp;#10;int ki
         <div class="post-meta">
           <span class="post-time">
             Posted on
-            <time itemprop="dateCreated" datetime="2015-10-21T13:18:20+08:00" content="2015-10-21">
+            <time itemprop="dateCreated" datetime="2015-10-21T13:34:11+08:00" content="2015-10-21">
               2015-10-21
             </time>
           </span>
@@ -252,7 +251,7 @@ codeblock lang:c %&amp;#125; 1#include &amp;#60;signal.h&amp;#62;&amp;#10;int ki
 
       
         <span itemprop="articleBody"><p>  In Linux, the API to send signals to process or process group is kill(..), details are as follows:</p>
-<figure class="highlight"><figcaption><span>codeblock lang:c %&#125; </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#include &#60;signal.h&#62;&#10;int kill(pid_t pid, int signo);&#10;int raise(int signo);&#10;    Both return: 0 if OK, &#8722;1 on error&#10;    &#10;&#123;% endcodeblock %&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">kill</span><span class="params">(pid_t pid, <span class="keyword">int</span> signo)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">raise</span><span class="params">(<span class="keyword">int</span> signo)</span></span>;</span><br><span class="line">    Both <span class="keyword">return</span>: <span class="number">0</span> <span class="keyword">if</span> OK, −<span class="number">1</span> on error</span><br></pre></td></tr></table></figure>
 <p>There are four different conditions for the pid argument to kill.</p>
 <ul>
 <li><p>pid &gt; 0   The signal is sent to the process whose process ID is pid.</p>
@@ -265,13 +264,12 @@ codeblock lang:c %&amp;#125; 1#include &amp;#60;signal.h&amp;#62;&amp;#10;int ki
 </li>
 </ul>
 <p>Let’s write a demo….</p>
-<p>The sender code:<br><figure class="highlight"><figcaption><span>codeblock lang:c %&#125; </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#include &#60;stdio.h&#62;&#10;#include &#60;stdlib.h&#62;&#10;#include &#60;signal.h&#62;&#10;#include &#60;sys/types.h&#62;&#10;#include &#60;unistd.h&#62;&#10;&#10;int main(int argc, char *argv[])&#123;&#10;    if(argc != 2)&#123;&#10;        printf(&#34;Usage: signal_sender &#60;pid&#62;\n&#34;);&#10;        exit(0);&#10;    &#125;&#10;    pid_t pid = (pid_t)atoi(argv[1]);&#10;    kill(pid, SIGUSR1);&#10;&#10;    return 0;&#10;&#125; &#10;&#123;% endcodeblock %&#125;</span><br></pre></td></tr></table></figure></p>
+<p>The sender code:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(argc != <span class="number">2</span>)&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Usage: signal_sender &lt;pid&gt;\n"</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">pid_t</span> pid = (<span class="keyword">pid_t</span>)atoi(argv[<span class="number">1</span>]);</span><br><span class="line">    kill(pid, SIGUSR1);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <pre><code>The receiver <span class="tag">code</span>:
-</code></pre><figure class="highlight"><figcaption><span>codeblock lang:c %&#125; </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#include &#60;stdio.h&#62;&#10;#include &#60;stdlib.h&#62;&#10;#include &#60;signal.h&#62;&#10;&#10;static void sig_usr(int);&#10;&#10;int &#10;main(void)&#123;&#10;&#9;if(signal(SIGUSR1,sig_usr) == SIG_ERR)&#123;&#10;&#9;&#9;printf(&#34;cannot catch SIGUSR1!&#34;);&#10;        exit(-1);&#10;    &#125;&#10;&#9;&#10;    for(;;)&#10;&#9;&#9;pause();&#10;&#125;&#10;&#10;static void sig_usr(int signo)&#123;&#10;&#9;if(signo == SIGUSR1)&#10;&#9;&#9;printf(&#34;received SIGUSR1\n&#34;);&#10;    else printf(&#34;other signals\n&#34;);&#10;&#125;&#10;&#10;&#123;% endcodeblock %&#125;</span><br></pre></td></tr></table></figure>
+</code></pre><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sig_usr</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> </span><br><span class="line"><span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(signal(SIGUSR1,sig_usr) == SIG_ERR)&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"cannot catch SIGUSR1!"</span>);</span><br><span class="line">        <span class="built_in">exit</span>(-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    <span class="keyword">for</span>(;;)</span><br><span class="line">		pause();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sig_usr</span><span class="params">(<span class="keyword">int</span> signo)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(signo == SIGUSR1)</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"received SIGUSR1\n"</span>);</span><br><span class="line">    <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">"other signals\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
 <li>After run the reciever, we got the pid of it, then the sender can send signal SIGUSR1 to it.Result is ok:</li>
 </ul>
-<p><img src="!--￼3--&gt;/images/send_signal.png" alt="signal_send"></p>
 </span>
       
     </div>
@@ -291,17 +289,13 @@ codeblock lang:c %&amp;#125; 1#include &amp;#60;signal.h&amp;#62;&amp;#10;int ki
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/10/21/2015-10-13-recall-home-1/" rel="next" title="回忆2009（1）">
-                <i class="fa fa-chevron-left"></i> 回忆2009（1）
+              <a href="/2015/10/21/2015-10-13-Python-read-file/" rel="next" title="python 读取文件的几种方式">
+                <i class="fa fa-chevron-left"></i> python 读取文件的几种方式
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/10/21/2015-10-13-Python-read-file/" rel="prev" title="python 读取文件的几种方式">
-                python 读取文件的几种方式 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -359,8 +353,8 @@ codeblock lang:c %&amp;#125; 1#include &amp;#60;signal.h&amp;#62;&amp;#10;int ki
 
       <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" src="/assets/vonzhou1.jpg" alt="John Doe" itemprop="image"/>
-          <p class="site-author-name" itemprop="name">John Doe</p>
+          <img class="site-author-image" src="/assets/vonzhou1.jpg" alt="vonzhou" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">vonzhou</p>
         </div>
         <p class="site-description motion-element" itemprop="description"></p>
         <nav class="site-state motion-element">
@@ -380,7 +374,7 @@ codeblock lang:c %&amp;#125; 1#include &amp;#60;signal.h&amp;#62;&amp;#10;int ki
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
@@ -430,7 +424,7 @@ codeblock lang:c %&amp;#125; 1#include &amp;#60;signal.h&amp;#62;&amp;#10;int ki
   <span class="with-love">
     <i class="icon-next-heart fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">John Doe</span>
+  <span class="author" itemprop="copyrightHolder">vonzhou</span>
 </div>
 
 <div class="powered-by">
