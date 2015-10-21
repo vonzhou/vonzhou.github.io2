@@ -46,7 +46,7 @@
 <meta name="description">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Chown's Blog">
-<meta property="og:url" content="https://vonzhou.github.io/archives/2015/index.html">
+<meta property="og:url" content="https://vonzhou.github.io/page/9/index.html">
 <meta property="og:site_name" content="Chown's Blog">
 <meta property="og:description">
 <meta name="twitter:card" content="summary">
@@ -63,7 +63,7 @@
 
 
 
-  <title> Archive | Chown's Blog </title>
+  <title> Chown's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="default">
@@ -84,7 +84,9 @@
 
 
 
-  <div class="container one-column  page-archive ">
+  <div class="container one-column 
+   page-home 
+">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -180,70 +182,125 @@
     <main id="main" class="main">
       <div class="main-inner">
         <div id="content" class="content"> 
+  <section id="posts" class="posts-expand">
+    
+      
 
-  <section id="posts" class="posts-collapse">
-    <span class="archive-move-on"></span>
+  
+  
 
-    <span class="archive-page-counter">
-      
-      
-      
-        
-      
-      Um..! 10 posts in total. Keep on posting.
-    </span>
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
     
+      <header class="post-header">
 
-      
-      
-      
-
-      
         
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2015">2015</h2>
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/10/21/2015-9-8-tcpdump-command/" itemprop="url">
+                  tcpdump 常用命令整理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-21T13:00:15+08:00" content="2015-10-21">
+              2015-10-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; In
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
         </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
       
       
 
       
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
         
-            <a class="post-title-link" href="/2015/10/21/2015-6-4-Sending Signal/" itemprop="url">
-              
-                <span itemprop="name">Sending signals between processes</span>
-              
-            </a>
+          <span itemprop="articleBody">
+            
+              <p>tcpdump command使用libpcap库，在网络层实现抓包，然后可以供我们分析。</p>
+<p>-i 指定在某个interface进行抓包。</p>
+<p><img src="/assets/tcpdump/tcpdump-i.png" alt=""></p>
+<p>-n 数字形式展示主机和服务端口。</p>
+<p>-c 指定抓包的数目。</p>
+<p><img src="/assets/tcpdump/tcpdump-c.png" alt=""></p>
+<p>-s 可以设置抓取包的大小，-s0则表示capture the whole packet.</p>
+<p><img src="/assets/tcpdump/tcpdump-s.png" alt=""></p>
+<p>-e 可以显示MAC地址，协议类型。</p>
+<p><img src="/assets/tcpdump/tcpdump-e.png" alt=""></p>
+<p>-v 会得到详细（verbose）信息（v,vv,vvv逐渐增多）.</p>
+<p><img src="/assets/tcpdump/tcpdump-v.png" alt=""></p>
+<p>-S 显示TCP的绝对序列号，而不是相对于初始序列号(ISN的相对值。</p>
+<p><img src="/assets/tcpdump/tcpdump-S.png" alt=""></p>
+<p>-w 用于指定文件存储抓取的包。</p>
+<p><img src="/assets/tcpdump/tcpdump-w.png" alt=""></p>
+<p>-r 用于读取我们刚才保存的文件。</p>
+<p><img src="/assets/tcpdump/tcpdump-w.png" alt=""></p>
+<p>port XX 指定具体的端口。</p>
+<p><img src="/assets/tcpdump/tcpdump-port.png" alt=""></p>
+<p>在网络程序的调试中要善于利用上述选项的组合进行分析！</p>
+
+            
+          </span>
         
-      </h1>
+      
+    </div>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-10-21T13:34:11+08:00"
-              content="2015-10-21" >
-          10-21
-        </time>
-      </div>
+    <footer class="post-footer">
+      
 
-    </header>
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </article>
 
 
-
     
-
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/archives/2015/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/archives/2015/page/10/">10</a><a class="extend next" rel="next" href="/archives/2015/page/2/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right"></i></a>
   </nav>
-
 
 
  </div>
@@ -359,12 +416,6 @@
   
   
   
-    <script type="text/javascript">
-      postMotionOptions = {stagger: 100, drag: true};
-    </script>
-  
-
-  
     
     
 
@@ -392,12 +443,6 @@
   <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
-
 
   <script type="text/javascript">
     $(document).ready(function () {
