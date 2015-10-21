@@ -200,8 +200,8 @@
             
             
               
-                <a class="post-title-link" href="/2015/10/21/2015-10-13-Python-read-file/" itemprop="url">
-                  python 读取文件的几种方式
+                <a class="post-title-link" href="/2015/10/21/2015-9-8-tcpdump-command/" itemprop="url">
+                  tcpdump 常用命令整理
                 </a>
               
             
@@ -211,7 +211,7 @@
         <div class="post-meta">
           <span class="post-time">
             Posted on
-            <time itemprop="dateCreated" datetime="2015-10-21T13:20:05+08:00" content="2015-10-21">
+            <time itemprop="dateCreated" datetime="2015-10-21T13:00:15+08:00" content="2015-10-21">
               2015-10-21
             </time>
           </span>
@@ -221,8 +221,8 @@
               &nbsp; | &nbsp; In
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
                   </a>
                 </span>
 
@@ -253,23 +253,135 @@
         
           <span itemprop="articleBody">
             
-              <p>读《Python核心编程》P208，场景是求文件的最大行长度，发现代码有点问题。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">f = open(<span class="string">'hello.txt'</span>, <span class="string">'r'</span>)</span><br><span class="line">longest = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">	lineLen = len(f.readline().strip())</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> lineLen:</span><br><span class="line">		<span class="keyword">break</span></span><br><span class="line">	<span class="keyword">if</span> lineLen &gt; longest:</span><br><span class="line">		longest = lineLen</span><br><span class="line"></span><br><span class="line">f.close()</span><br><span class="line"><span class="keyword">print</span> <span class="string">'Longest Line:'</span>,longest</span><br></pre></td></tr></table></figure>
-<p>上述代码，在遇到空行的时候就会break，所以后面的行就不能处理，所以就想到了在Python中如何区分空行和EOF，很显然这里的问题是不能用长度为0作为break的条件，所以应该如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">f = open(<span class="string">'hello.txt'</span>, <span class="string">'r'</span>)</span><br><span class="line">longest = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">	line = f.readline()</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> line:</span><br><span class="line">		<span class="keyword">break</span> <span class="comment"># EOF  NB. line == ''</span></span><br><span class="line">	lineLen = len(line.strip())</span><br><span class="line">	<span class="keyword">if</span> lineLen &gt; longest:</span><br><span class="line">		longest = lineLen</span><br><span class="line"></span><br><span class="line">f.close()</span><br><span class="line"><span class="keyword">print</span> <span class="string">'Longest Line:'</span>,longest</span><br></pre></td></tr></table></figure>
-<p>这里顺便总结下Python中读取文件的几种方式：</p>
-<p>1.如上面，每次读取一行readline()</p>
-<p>2.先readlines()得到所有的行到内存中，然后迭代处理这些行，这在处理大文件时有问题</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">allLines = f.readlines()</span><br><span class="line">f.close() </span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> allLines:</span><br><span class="line">	lineLen = len(line.strip())</span><br><span class="line">	<span class="keyword">if</span> lineLen &gt; longest:</span><br><span class="line">		longest = lineLen</span><br></pre></td></tr></table></figure>
-<p>等价于</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">allLines = [x.strip() <span class="keyword">for</span> x <span class="keyword">in</span> f.readlines()]</span><br><span class="line">f.close()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> allLines:</span><br><span class="line">	lineLen = len(line)</span><br><span class="line">	<span class="keyword">if</span> lineLen &gt; longest:</span><br><span class="line">		longest = lineLen</span><br></pre></td></tr></table></figure>
-<p>3.直接对该文件迭代</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">allLines = [x.strip() <span class="keyword">for</span> x <span class="keyword">in</span> f.readlines()]</span><br><span class="line">f.close() <span class="comment">#...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> allLines:</span><br><span class="line">	lineLen = len(line)</span><br><span class="line">	<span class="keyword">if</span> lineLen &gt; longest:</span><br><span class="line">		longest = lineLen</span><br></pre></td></tr></table></figure>
-<p>4.更简洁的形式使用列表解析的形式，同样列表解析需要所有的行读入内存</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">allLines = [len(x.strip()) <span class="keyword">for</span> x <span class="keyword">in</span> f]</span><br><span class="line">f.close() </span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">'Longest Line:'</span>,max(allLines)</span><br></pre></td></tr></table></figure>
-<p>5.进一步，使用生成器表达式替换列表解析</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">longest = max(len(x.strip()) <span class="keyword">for</span> x <span class="keyword">in</span> f)</span><br><span class="line">f.close() </span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">'Longest Line:'</span>,longest</span><br></pre></td></tr></table></figure>
-<p>可以发现Python在处理某些任务的时候很方便。</p>
+              <p>tcpdump command使用libpcap库，在网络层实现抓包，然后可以供我们分析。</p>
+<p>-i 指定在某个interface进行抓包。</p>
+<p><img src="/assets/tcpdump/tcpdump-i.png" alt=""></p>
+<p>-n 数字形式展示主机和服务端口。</p>
+<p>-c 指定抓包的数目。</p>
+<p><img src="/assets/tcpdump/tcpdump-c.png" alt=""></p>
+<p>-s 可以设置抓取包的大小，-s0则表示capture the whole packet.</p>
+<p><img src="/assets/tcpdump/tcpdump-s.png" alt=""></p>
+<p>-e 可以显示MAC地址，协议类型。</p>
+<p><img src="/assets/tcpdump/tcpdump-e.png" alt=""></p>
+<p>-v 会得到详细（verbose）信息（v,vv,vvv逐渐增多）.</p>
+<p><img src="/assets/tcpdump/tcpdump-v.png" alt=""></p>
+<p>-S 显示TCP的绝对序列号，而不是相对于初始序列号(ISN的相对值。</p>
+<p><img src="/assets/tcpdump/tcpdump-S.png" alt=""></p>
+<p>-w 用于指定文件存储抓取的包。</p>
+<p><img src="/assets/tcpdump/tcpdump-w.png" alt=""></p>
+<p>-r 用于读取我们刚才保存的文件。</p>
+<p><img src="/assets/tcpdump/tcpdump-w.png" alt=""></p>
+<p>port XX 指定具体的端口。</p>
+<p><img src="/assets/tcpdump/tcpdump-port.png" alt=""></p>
+<p>在网络程序的调试中要善于利用上述选项的组合进行分析！</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/10/20/2015-10-20-Hello-World/" itemprop="url">
+                  使用hexo构建博客
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-20T23:07:07+08:00" content="2015-10-20">
+              2015-10-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; In
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>1.安装git和node.js，npm</p>
+<p>2.安装hexo： npm install -g hexo-cli， 在ubuntu12.04上会出现问题，参考<a href="https://chrislea.com/2014/07/09/joining-forces-nodesource/" target="_blank" rel="external">这里</a></p>
+<p>3.安装hexo成功后，可以在本地构建博客系统</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init myblog&#10;cd myblog&#10;npm install</span><br></pre></td></tr></table></figure>
+<p>4.可以启动本地服务，看到博客的状态了： hexo server</p>
+<p>5.可以安装自己喜欢的主题，<a href="http://hexo.io/themes/" target="_blank" rel="external">http://hexo.io/themes/</a> 有很多，比如选择next</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd myblog&#10;git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+<p>6.在_config.yml中配置语言和主题</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">language: default&#10;theme: next</span><br></pre></td></tr></table></figure>
+<p>7.可以hexo new page对应的菜单，如标签，归类，个人主页等等，然后修改theme/next/_config.yml中的menu项</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page &#34;tags&#34;</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">menu:&#10;  home: /&#10;  categories: /categories&#10;  about: /about&#10;  archives: /archives&#10;  tags: /tags&#10;  #commonweal: /404.html</span><br></pre></td></tr></table></figure>
+<p>8.配置部署选项，这里使用github</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deploy:&#10;  type: git&#10;  repo: https://github.com/vonzhou/vonzhou.github.io.git&#10;  branch: master&#10;  message: vonzhou blog deploy using hexo</span><br></pre></td></tr></table></figure>
+<p><strong>注意冒号后面有空格</strong></p>
+<p>9.剩下的配置细节可以慢慢根据自己的情况来完善了。</p>
+<p>至此博客就搭建起来了，看这里 <a href="http://vonzhou.github.io/">http://vonzhou.github.io/</a> 。</p>
+<p>参考<br>1.<a href="http://theme-next.iissnan.com/five-minutes-setup.html" target="_blank" rel="external">5 分钟快速安装NEXT</a><br>2.<a href="https://hexo.io/" target="_blank" rel="external">hexo</a>， <a href="https://github.com/iissnan/hexo-theme-next/wiki" target="_blank" rel="external">Hexo WIKI</a></p>
 
             
           </span>
@@ -295,7 +407,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
   </nav>
 
 
