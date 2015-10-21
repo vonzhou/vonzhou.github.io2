@@ -43,16 +43,58 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
 
 
-<meta name="description">
+<meta name="description" content="tcpdump 常用命令整理
+tcpdump使用libpcap库，在网络层实现抓包，然后可以供我们分析。
+-i 指定在某个interface进行抓包。
+
+-n 数字形式展示主机和服务端口。
+-c 指定抓包的数目。
+
+-s 可以设置抓取包的大小，-s0则表示capture the whole packet.
+
+-e 可以显示MAC地址，协议类型。
+
+-v 会得到详细（verbose）信息（v,vv,">
 <meta property="og:type" content="website">
-<meta property="og:title" content="about">
-<meta property="og:url" content="https://vonzhou.github.io/about/index.html">
+<meta property="og:title" content="Chown's Blog">
+<meta property="og:url" content="https://vonzhou.github.io/assets/tcpdump/README.html">
 <meta property="og:site_name" content="Chown's Blog">
-<meta property="og:description">
-<meta property="og:updated_time" content="2015-10-20T15:04:09.000Z">
+<meta property="og:description" content="tcpdump 常用命令整理
+tcpdump使用libpcap库，在网络层实现抓包，然后可以供我们分析。
+-i 指定在某个interface进行抓包。
+
+-n 数字形式展示主机和服务端口。
+-c 指定抓包的数目。
+
+-s 可以设置抓取包的大小，-s0则表示capture the whole packet.
+
+-e 可以显示MAC地址，协议类型。
+
+-v 会得到详细（verbose）信息（v,vv,">
+<meta property="og:image" content="https://vonzhou.github.io/tcpdump-i.png">
+<meta property="og:image" content="https://vonzhou.github.io/tcpdump-c.png">
+<meta property="og:image" content="https://vonzhou.github.io/tcpdump-s.png">
+<meta property="og:image" content="https://vonzhou.github.io/tcpdump-e.png">
+<meta property="og:image" content="https://vonzhou.github.io/tcpdump-v.png">
+<meta property="og:image" content="https://vonzhou.github.io/tcpdump-S.png">
+<meta property="og:image" content="https://vonzhou.github.io/tcpdump-w.png">
+<meta property="og:image" content="https://vonzhou.github.io/tcpdump-w.png">
+<meta property="og:image" content="https://vonzhou.github.io/tcpdump-port.png">
+<meta property="og:updated_time" content="2015-10-11T12:13:17.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="about">
-<meta name="twitter:description">
+<meta name="twitter:title" content="Chown's Blog">
+<meta name="twitter:description" content="tcpdump 常用命令整理
+tcpdump使用libpcap库，在网络层实现抓包，然后可以供我们分析。
+-i 指定在某个interface进行抓包。
+
+-n 数字形式展示主机和服务端口。
+-c 指定抓包的数目。
+
+-s 可以设置抓取包的大小，-s0则表示capture the whole packet.
+
+-e 可以显示MAC地址，协议类型。
+
+-v 会得到详细（verbose）信息（v,vv,">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -68,7 +110,7 @@
   
 
   
-    about | Chown's Blog
+     | Chown's Blog
   
 </title>
 </head>
@@ -191,7 +233,29 @@
   <div id="posts" class="posts-expand">
     
     
-      
+      <h1 id="tcpdump_常用命令整理">tcpdump 常用命令整理</h1><hr>
+<p>tcpdump使用libpcap库，在网络层实现抓包，然后可以供我们分析。</p>
+<p>-i 指定在某个interface进行抓包。</p>
+<p><img src="tcpdump-i.png" alt=""></p>
+<p>-n 数字形式展示主机和服务端口。</p>
+<p>-c 指定抓包的数目。</p>
+<p><img src="tcpdump-c.png" alt=""></p>
+<p>-s 可以设置抓取包的大小，-s0则表示capture the whole packet.</p>
+<p><img src="tcpdump-s.png" alt=""></p>
+<p>-e 可以显示MAC地址，协议类型。</p>
+<p><img src="tcpdump-e.png" alt=""></p>
+<p>-v 会得到详细（verbose）信息（v,vv,vvv逐渐增多）.</p>
+<p><img src="tcpdump-v.png" alt=""></p>
+<p>-S 显示TCP的绝对序列号，而不是相对于初始序列号(ISN的相对值。</p>
+<p><img src="tcpdump-S.png" alt=""></p>
+<p>-w 用于指定文件存储抓取的包。</p>
+<p><img src="tcpdump-w.png" alt=""></p>
+<p>-r 用于读取我们刚才保存的文件。</p>
+<p><img src="tcpdump-w.png" alt=""></p>
+<p>port XX 指定具体的端口。</p>
+<p><img src="tcpdump-port.png" alt=""></p>
+<p>在网络程序的调试中要善于利用上述选项的组合进行分析！</p>
+
     
   </div>
 

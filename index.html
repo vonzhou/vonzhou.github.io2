@@ -45,12 +45,12 @@
 
 <meta name="description">
 <meta property="og:type" content="website">
-<meta property="og:title" content="vonzhou blog">
+<meta property="og:title" content="Chown's Blog">
 <meta property="og:url" content="https://vonzhou.github.io/index.html">
-<meta property="og:site_name" content="vonzhou blog">
+<meta property="og:site_name" content="Chown's Blog">
 <meta property="og:description">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="vonzhou blog">
+<meta name="twitter:title" content="Chown's Blog">
 <meta name="twitter:description">
 
 
@@ -63,7 +63,7 @@
 
 
 
-  <title> vonzhou blog </title>
+  <title> Chown's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="default">
@@ -96,11 +96,11 @@
   <div class="custom-logo-site-title">
     <a href="/"  class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <span class="site-title">vonzhou blog</span>
+      <span class="site-title">Chown's Blog</span>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
-  <p class="site-subtitle"></p>
+  <p class="site-subtitle">人的一切痛苦，本质上都是对自己的无能的愤怒。</p>
 </div>
 
 <div class="site-nav-toggle">
@@ -200,6 +200,1053 @@
             
             
               
+                <a class="post-title-link" href="/2015/10/21/2015-10-13-Python-read-file/" itemprop="url">
+                  python 读取文件的几种方式
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-21T13:20:05+08:00" content="2015-10-21">
+              2015-10-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; In
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>读《Python核心编程》P208，场景是求文件的最大行长度，发现代码有点问题。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">f = open(<span class="string">'hello.txt'</span>, <span class="string">'r'</span>)</span><br><span class="line">longest = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">	lineLen = len(f.readline().strip())</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> lineLen:</span><br><span class="line">		<span class="keyword">break</span></span><br><span class="line">	<span class="keyword">if</span> lineLen &gt; longest:</span><br><span class="line">		longest = lineLen</span><br><span class="line"></span><br><span class="line">f.close()</span><br><span class="line"><span class="keyword">print</span> <span class="string">'Longest Line:'</span>,longest</span><br></pre></td></tr></table></figure>
+<p>上述代码，在遇到空行的时候就会break，所以后面的行就不能处理，所以就想到了在Python中如何区分空行和EOF，很显然这里的问题是不能用长度为0作为break的条件，所以应该如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">f = open(<span class="string">'hello.txt'</span>, <span class="string">'r'</span>)</span><br><span class="line">longest = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">	line = f.readline()</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> line:</span><br><span class="line">		<span class="keyword">break</span> <span class="comment"># EOF  NB. line == ''</span></span><br><span class="line">	lineLen = len(line.strip())</span><br><span class="line">	<span class="keyword">if</span> lineLen &gt; longest:</span><br><span class="line">		longest = lineLen</span><br><span class="line"></span><br><span class="line">f.close()</span><br><span class="line"><span class="keyword">print</span> <span class="string">'Longest Line:'</span>,longest</span><br></pre></td></tr></table></figure>
+<p>这里顺便总结下Python中读取文件的几种方式：</p>
+<p>1.如上面，每次读取一行readline()</p>
+<p>2.先readlines()得到所有的行到内存中，然后迭代处理这些行，这在处理大文件时有问题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">allLines = f.readlines()</span><br><span class="line">f.close() </span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> allLines:</span><br><span class="line">	lineLen = len(line.strip())</span><br><span class="line">	<span class="keyword">if</span> lineLen &gt; longest:</span><br><span class="line">		longest = lineLen</span><br></pre></td></tr></table></figure>
+<p>等价于</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">allLines = [x.strip() <span class="keyword">for</span> x <span class="keyword">in</span> f.readlines()]</span><br><span class="line">f.close()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> allLines:</span><br><span class="line">	lineLen = len(line)</span><br><span class="line">	<span class="keyword">if</span> lineLen &gt; longest:</span><br><span class="line">		longest = lineLen</span><br></pre></td></tr></table></figure>
+<p>3.直接对该文件迭代</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">allLines = [x.strip() <span class="keyword">for</span> x <span class="keyword">in</span> f.readlines()]</span><br><span class="line">f.close() <span class="comment">#...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> allLines:</span><br><span class="line">	lineLen = len(line)</span><br><span class="line">	<span class="keyword">if</span> lineLen &gt; longest:</span><br><span class="line">		longest = lineLen</span><br></pre></td></tr></table></figure>
+<p>4.更简洁的形式使用列表解析的形式，同样列表解析需要所有的行读入内存</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">allLines = [len(x.strip()) <span class="keyword">for</span> x <span class="keyword">in</span> f]</span><br><span class="line">f.close() </span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">'Longest Line:'</span>,max(allLines)</span><br></pre></td></tr></table></figure>
+<p>5.进一步，使用生成器表达式替换列表解析</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">longest = max(len(x.strip()) <span class="keyword">for</span> x <span class="keyword">in</span> f)</span><br><span class="line">f.close() </span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">'Longest Line:'</span>,longest</span><br></pre></td></tr></table></figure>
+<p>可以发现Python在处理某些任务的时候很方便。</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/10/21/2015-6-4-Sending Signal/" itemprop="url">
+                  Sending signals between processes
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-21T13:18:20+08:00" content="2015-10-21">
+              2015-10-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; In
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>  In Linux, the API to send signals to process or process group is kill(..), details are as follows:</p>
+<figure class="highlight"><figcaption><span>codeblock lang:c %&#125; </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#include &#60;signal.h&#62;&#10;int kill(pid_t pid, int signo);&#10;int raise(int signo);&#10;    Both return: 0 if OK, &#8722;1 on error&#10;    &#10;&#123;% endcodeblock %&#125;</span><br></pre></td></tr></table></figure>
+<p>There are four different conditions for the pid argument to kill.</p>
+<ul>
+<li><p>pid &gt; 0   The signal is sent to the process whose process ID is pid.</p>
+</li>
+<li><p>pid==0    The signal is sent to all processes whose process group ID equals the process group ID of the sender and for which the sender has permission to send the signal. Note that the term all processes excludes an implementation-defined set of system processes. For most UNIX systems, this set of system processes includes the kernel processes and init (pid 1).</p>
+</li>
+<li><p>pid &lt; 0 The signal is sent to all processes whose process group ID equals the absolute value of pid and for which the sender has permission to send the signal. Again, the set of all processes excludes certain system processes, as described earlier.</p>
+</li>
+<li><p>pid==-1 The signal is sent to all processes on the system for which the sender has permission to send the signal. As before, the set of processes excludes certain system processes.</p>
+</li>
+</ul>
+<p>Let’s write a demo….</p>
+<p>The sender code:<br><figure class="highlight"><figcaption><span>codeblock lang:c %&#125; </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#include &#60;stdio.h&#62;&#10;#include &#60;stdlib.h&#62;&#10;#include &#60;signal.h&#62;&#10;#include &#60;sys/types.h&#62;&#10;#include &#60;unistd.h&#62;&#10;&#10;int main(int argc, char *argv[])&#123;&#10;    if(argc != 2)&#123;&#10;        printf(&#34;Usage: signal_sender &#60;pid&#62;\n&#34;);&#10;        exit(0);&#10;    &#125;&#10;    pid_t pid = (pid_t)atoi(argv[1]);&#10;    kill(pid, SIGUSR1);&#10;&#10;    return 0;&#10;&#125; &#10;&#123;% endcodeblock %&#125;</span><br></pre></td></tr></table></figure></p>
+<pre><code>The receiver <span class="tag">code</span>:
+</code></pre><figure class="highlight"><figcaption><span>codeblock lang:c %&#125; </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#include &#60;stdio.h&#62;&#10;#include &#60;stdlib.h&#62;&#10;#include &#60;signal.h&#62;&#10;&#10;static void sig_usr(int);&#10;&#10;int &#10;main(void)&#123;&#10;&#9;if(signal(SIGUSR1,sig_usr) == SIG_ERR)&#123;&#10;&#9;&#9;printf(&#34;cannot catch SIGUSR1!&#34;);&#10;        exit(-1);&#10;    &#125;&#10;&#9;&#10;    for(;;)&#10;&#9;&#9;pause();&#10;&#125;&#10;&#10;static void sig_usr(int signo)&#123;&#10;&#9;if(signo == SIGUSR1)&#10;&#9;&#9;printf(&#34;received SIGUSR1\n&#34;);&#10;    else printf(&#34;other signals\n&#34;);&#10;&#125;&#10;&#10;&#123;% endcodeblock %&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>After run the reciever, we got the pid of it, then the sender can send signal SIGUSR1 to it.Result is ok:</li>
+</ul>
+<p><img src="!--￼3--&gt;/images/send_signal.png" alt="signal_send"></p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/10/21/2015-10-13-recall-home-1/" itemprop="url">
+                  回忆2009（1）
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-21T13:12:54+08:00" content="2015-10-21">
+              2015-10-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; In
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Life/" itemprop="url" rel="index">
+                    <span itemprop="name">Life</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>今天无意间看到了一些过去备份的照片，然后就沦陷了，很多画面很清晰，但是很多东西却怎么也想不起来，渐渐远去，记得那时候还是一个金利手机，像素不高，但是对我而言却无比珍贵，透过这些我大概能够回忆起当天的轨迹。</p>
+<p>我和母亲一同到坡上干活，沿途我拍摄了一些风景，彼时还有我们家的那头牛，应该是最后一头吧！</p>
+<blockquote>
+<p>母亲的背影</p>
+</blockquote>
+<p><img src="/assets/home/2009-recall-home-1.jpg" alt=""></p>
+<p><img src="/assets/home/2009-recall-home-2.jpg" alt=""></p>
+<blockquote>
+<p>我们家小牛的正面照</p>
+</blockquote>
+<p><img src="/assets/home/2009-recall-home-3.jpg" alt=""></p>
+<p>五六年的光影一晃而过，发现失去了太多，无法弥补!</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/10/21/2015-10-12-广州之旅/" itemprop="url">
+                  2015 广州之旅
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-21T13:12:13+08:00" content="2015-10-21">
+              2015-10-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; In
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Life/" itemprop="url" rel="index">
+                    <span itemprop="name">Life</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>找工作这段时间也是蛮拼的，所以旅个游，放松下。</p>
+<blockquote>
+<p>第1天，从武汉到广州南，青儿接驾，到达广工大！</p>
+</blockquote>
+<p><img src="/assets/2015-10-1-travel/10-1.jpeg" alt=""></p>
+<blockquote>
+<p>第2天，广东早茶，岭南印象园，小蛮腰，珠江夜游，充满崎岖的一天！</p>
+</blockquote>
+<p><img src="/assets/2015-10-1-travel/10-2-1.jpeg" alt=""></p>
+<p><img src="/assets/2015-10-1-travel/10-2-2.PNG" alt=""></p>
+<p><img src="/assets/2015-10-1-travel/10-2-3.PNG" alt=""></p>
+<blockquote>
+<p>第3天，奔赴长洲岛黄埔军校，然后到天河区龙洞山庄，晚上和砀山帮吃烧烤！</p>
+</blockquote>
+<p><img src="/assets/2015-10-1-travel/10-3.PNG" alt=""></p>
+<blockquote>
+<p>第4天，强雨，加上敏们，一行5人，海心沙，省博物馆，再看云雾缭绕的小蛮腰，晚上冒雨回去大学城！</p>
+</blockquote>
+<p><img src="/assets/2015-10-1-travel/10-4.PNG" alt=""></p>
+<blockquote>
+<p>第5天，城际到达深圳，去大梅沙看海，第一次距离香港那么近！</p>
+</blockquote>
+<p><img src="/assets/2015-10-1-travel/10-5.PNG" alt=""></p>
+<blockquote>
+<p>最后一天没来得及看世界之窗，也没来得及吃一顿像样的饭，就离开了！</p>
+</blockquote>
+<p><img src="/assets/2015-10-1-travel/10-6.PNG" alt=""></p>
+<p>多谢青儿和敏的招待，不虚此行。</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/10/21/2015-10-12-For-job-summary/" itemprop="url">
+                  2015 找工作总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-21T13:11:17+08:00" content="2015-10-21">
+              2015-10-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; In
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Life/" itemprop="url" rel="index">
+                    <span itemprop="name">Life</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <h2 id="前言">前言</h2><p>找工作毕竟为人生之大事，所以总结一下，然后做该做的事情。掐指一算，也花了将近半年的时间了，从找实习开始，有点当年考研的味道，有目标，有力量。</p>
+<p>实习拿到了阿里和腾讯的offer，想了太远，以及考虑阿里允许实习一个月，所以就去了淘宝城，进行了为期一个多月的实习，那段日子很辛苦，为了习得更多东西，晚上零点之后才会住房，总想尽快熟悉相关的东西，然后给众人留下好印象，收获还是有的，实习期间就有了以后长留于此的想法。可是，变化总是要拥抱的，今年阿里大规模缩招，我一个B+级别的何以能留下，所以现在想想还好我当时实习时间短，^_^。</p>
+<p>等待结果的过程是痛苦的，你总是试图往好的方向去意淫，但是事实来的时候你不得不坦然。所以接下来就进入了战斗模式，各种通道，各种公司，狂轰乱炸。在面试中成长，在面试中寻找自信。</p>
+<p>总的来说最后拿到了一些，如何选择？</p>
+<h2 id="结果汇总">结果汇总</h2><table>
+<thead>
+<tr>
+<th>公司</th>
+<th>行进</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>阿里</td>
+<td>业务安全实习 7.9-8.14</td>
+<td>转正面试结果：失败！</td>
+</tr>
+<tr>
+<td>华为</td>
+<td>IT 产品线，云存储（成都）</td>
+<td>offer待遇很好</td>
+</tr>
+<tr>
+<td>网易游戏</td>
+<td>9.15在线笔试</td>
+<td>没有一面机会</td>
+</tr>
+<tr>
+<td>腾讯</td>
+<td>9.14 下午3:30 面试 9.17 二面 HR面</td>
+<td>IEG 9.22 签两方</td>
+</tr>
+<tr>
+<td>百度</td>
+<td>9.12 笔试，9.15 一面，9.18 二面</td>
+<td>二面跪了</td>
+</tr>
+<tr>
+<td>蘑菇街</td>
+<td>9.19 在线笔试</td>
+<td>没有面试机会，草</td>
+</tr>
+<tr>
+<td>UCloud</td>
+<td>上海,和自己做的非常接近</td>
+<td>offer</td>
+</tr>
+<tr>
+<td>网易互联网</td>
+<td>9.22面试</td>
+<td>offer</td>
+</tr>
+<tr>
+<td>微策略</td>
+<td>电话面了两次，10.12进行了2次现场面试</td>
+<td>问题不大</td>
+</tr>
+</tbody>
+</table>
+<h2 id="选择">选择</h2><p>如何选择？如何进行所为的职业生涯规划？有人说你列个表格看纠结去哪儿更胜一筹，但我想说，难道所有的条目都是等价的吗？可能就仅仅为了某个理由就肆无忌惮的选择了一个一般的公司。</p>
+<p>尝试列个表：</p>
+<table>
+<thead>
+<tr>
+<th>因素</th>
+<th>是否看重？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>个人提升</td>
+<td></td>
+</tr>
+<tr>
+<td>个人情节</td>
+<td></td>
+</tr>
+<tr>
+<td>机会更多</td>
+<td></td>
+</tr>
+<tr>
+<td>公司注重工程师</td>
+<td></td>
+</tr>
+<tr>
+<td>加班不多</td>
+<td></td>
+</tr>
+<tr>
+<td>和自己想做的更接近</td>
+<td></td>
+</tr>
+<tr>
+<td>你的另一半</td>
+<td></td>
+</tr>
+<tr>
+<td>你真的热爱游戏开发吗？一辈子？</td>
+<td></td>
+</tr>
+<tr>
+<td>公司伙食好</td>
+<td></td>
+</tr>
+<tr>
+<td>外企，流程规范</td>
+<td></td>
+</tr>
+<tr>
+<td>有离家近的公司吗？</td>
+</tr>
+</tbody>
+</table>
+<h2 id="明天你好">明天你好</h2><p>找工作的事差不多就这样了，再掐指一算，在学校的日子也不多了，怀揣着一颗感恩的心去想想毕业设计做什么，并做好！</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/10/21/2015-6-4-Starting Android/" itemprop="url">
+                  Android First Day
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-21T13:08:31+08:00" content="2015-10-21">
+              2015-10-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; In
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>本科的时候接触过Android,并且毕业设计也是做了俩APP，“连连看”和“新浪微博”，为了完成功能而快速学习，很多东西来不及吃透，出了问题，搜解决方案，根本不知道为何如此。Android开发环境的架构是怎样的？所以需要有时机还是精心汲取点东西，知其所以然！这两天搭个环境也把人搞死了，翻墙不易。最终环境搞定了，确定在4.2下开发。下面是遇到的主要问题。</p>
+<ul>
+<li><a href="http://stackoverflow.com/questions/18964902/android-support-library-v7-error-retrieving-parent-for-item" target="_blank" rel="external">Can’t Find Theme.AppCompat.Light for New Android ActionBar Support</a> 需要sdk extras下面的appcompat这个库；</li>
+<li><a href="http://stackoverflow.com/questions/26431676/appcompat-v721-0-0-no-resource-found-that-matches-the-given-name-attr-andro" target="_blank" rel="external">appcompat-v7:21.0.0’: No resource found that matches the given name: attr ‘android:actionModeShareDrawable’</a>有些包没有下载；</li>
+<li>emulator-5554 disconnected! Cancelling ‘com.example.helloandroid.HelloAndroid activity launch’ 尝试各种方法没有解决，统一把AVD换成API 17之后又没有这个问题了，奇怪；</li>
+<li><a href="http://askubuntu.com/questions/534044/error-32-bit-linux-android-emulator-binaries-are-deprecated-when-attemping-to-r" target="_blank" rel="external">Google以后不支持32位的AVD了</a></li>
+</ul>
+<p>##Hello World.<br><img src="!--￼0--&gt;/images/android-hello.png" alt="android-hello"></p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/10/21/2015-6-3-A Journal/" itemprop="url">
+                  发表了一篇不知名的期刊
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-21T13:05:42+08:00" content="2015-10-21">
+              2015-10-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; In
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Research/" itemprop="url" rel="index">
+                    <span itemprop="name">Research</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>之前写的一篇期刊发表了，虽然没有那么重量级，但对于我这种不爱好科研的人来说已经够了。为了写这个东西也花了很多的时间，从看paper，看书，到不断的修改，经历了很久。</p>
+<p>在此，记录下。</p>
+<p>文章地址 </p>
+<p>###<a href="http://escj.cnic.cn/CN/Y2015/V6/I1/18" target="_blank" rel="external">大数据存储技术进展</a></p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/10/21/2015-6-2-开篇/" itemprop="url">
+                  开篇
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-21T13:02:31+08:00" content="2015-10-21">
+              2015-10-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; In
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Life/" itemprop="url" rel="index">
+                    <span itemprop="name">Life</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>之前也一直在CSDN上用心写技术博客，有关于SDN，Linux环境编程，Linux内核，Java，网络编程，算法等等，对新技术充满激情，对困难不懈探索。长时间如果不搞点技术方面的东西，不写代码，会觉得少点什么。或许正是在这样的艰难行进中，自己得到了成长！<br>进入计算机领域6,7年了，但仍热只能算得上是一个Beginner，学无止境，而且也没做到学以致用。<br>今后打算在Github上管理自己的博客，发表才是最好的记忆。主要记录：</p>
+<blockquote>
+<ul>
+<li>技术感悟</li>
+<li>所见所想</li>
+<li>代码阅读</li>
+</ul>
+</blockquote>
+<p>来一张图片表达下心情</p>
+<p><img src="/assets/wheat.jpg" alt="wheat-mother"></p>
+<h3 id="CSDN博客"><a href="http://blog.csdn.net/vonzhoufz?viewmode=contents" target="_blank" rel="external">CSDN博客</a></h3>
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                <a class="post-title-link" href="/2015/10/21/2015-9-8-tcpdump-command/" itemprop="url">
+                  tcpdump 常用命令整理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-21T13:00:15+08:00" content="2015-10-21">
+              2015-10-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; In
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>tcpdump command使用libpcap库，在网络层实现抓包，然后可以供我们分析。</p>
+<p>-i 指定在某个interface进行抓包。</p>
+<p><img src="/assets/tcpdump/tcpdump-i.png" alt=""></p>
+<p>-n 数字形式展示主机和服务端口。</p>
+<p>-c 指定抓包的数目。</p>
+<p><img src="/assets/tcpdump/tcpdump-c.png" alt=""></p>
+<p>-s 可以设置抓取包的大小，-s0则表示capture the whole packet.</p>
+<p><img src="/assets/tcpdump/tcpdump-s.png" alt=""></p>
+<p>-e 可以显示MAC地址，协议类型。</p>
+<p><img src="/assets/tcpdump/tcpdump-e.png" alt=""></p>
+<p>-v 会得到详细（verbose）信息（v,vv,vvv逐渐增多）.</p>
+<p><img src="/assets/tcpdump/tcpdump-v.png" alt=""></p>
+<p>-S 显示TCP的绝对序列号，而不是相对于初始序列号(ISN的相对值。</p>
+<p><img src="/assets/tcpdump/tcpdump-S.png" alt=""></p>
+<p>-w 用于指定文件存储抓取的包。</p>
+<p><img src="/assets/tcpdump/tcpdump-w.png" alt=""></p>
+<p>-r 用于读取我们刚才保存的文件。</p>
+<p><img src="/assets/tcpdump/tcpdump-w.png" alt=""></p>
+<p>port XX 指定具体的端口。</p>
+<p><img src="/assets/tcpdump/tcpdump-port.png" alt=""></p>
+<p>在网络程序的调试中要善于利用上述选项的组合进行分析！</p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
                 <a class="post-title-link" href="/2015/10/20/2015-10-20-Hello-World/" itemprop="url">
                   使用hexo构建博客
                 </a>
@@ -266,8 +1313,11 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page &#34;tags&#34;</span><br></pre></td></tr></table></figure>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">menu:&#10;  home: /&#10;  categories: /categories&#10;  about: /about&#10;  archives: /archives&#10;  tags: /tags&#10;  #commonweal: /404.html</span><br></pre></td></tr></table></figure>
 <p>8.配置部署选项，这里使用github</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deploy:&#10;  type:git&#10;  repo:https://github.com/vonzhou/vonzhou.github.io.git&#10;  branch:master&#10;  message:vonzhou blog deploy using hexo</span><br></pre></td></tr></table></figure>
-<p>参考<br>1.<a href="http://theme-next.iissnan.com/five-minutes-setup.html" target="_blank" rel="external">5 分钟快速安装NEXT</a><br>2.<a href="https://hexo.io/" target="_blank" rel="external">hexo</a></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deploy:&#10;  type: git&#10;  repo: https://github.com/vonzhou/vonzhou.github.io.git&#10;  branch: master&#10;  message: vonzhou blog deploy using hexo</span><br></pre></td></tr></table></figure>
+<p><strong>注意冒号后面有空格</strong></p>
+<p>9.剩下的配置细节可以慢慢根据自己的情况来完善了。</p>
+<p>至此博客就搭建起来了，看这里 <a href="http://vonzhou.github.io/">http://vonzhou.github.io/</a> 。</p>
+<p>参考<br>1.<a href="http://theme-next.iissnan.com/five-minutes-setup.html" target="_blank" rel="external">5 分钟快速安装NEXT</a><br>2.<a href="https://hexo.io/" target="_blank" rel="external">hexo</a>， <a href="https://github.com/iissnan/hexo-theme-next/wiki" target="_blank" rel="external">Hexo WIKI</a></p>
 
             
           </span>
@@ -320,28 +1370,28 @@
 
       <section class="site-overview sidebar-panel  sidebar-panel-active ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" src="/images/default_avatar.jpg" alt="John Doe" itemprop="image"/>
+          <img class="site-author-image" src="/assets/vonzhou1.jpg" alt="John Doe" itemprop="image"/>
           <p class="site-author-name" itemprop="name">John Doe</p>
         </div>
         <p class="site-description motion-element" itemprop="description"></p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">1</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">1</span>
+              <span class="site-state-item-count">6</span>
               <span class="site-state-item-name">categories</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">1</span>
+              <span class="site-state-item-count">15</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>

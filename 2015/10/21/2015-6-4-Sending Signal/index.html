@@ -34,7 +34,7 @@
 
 
 
-  <meta name="keywords" content="Hexo," />
+  <meta name="keywords" content="IPC,signal," />
 
 
 
@@ -43,31 +43,20 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.2" />
 
 
-<meta name="description" content="1.安装git和node.js，npm
-2.安装hexo： npm install -g hexo-cli， 在ubuntu12.04上会出现问题，参考这里
-3.安装hexo成功后，可以在本地构建博客系统
-1hexo init myblog&amp;#10;cd myblog&amp;#10;npm install
-4.可以启动本地服务，看到博客的状态了： hexo server
-5.可以安装自己喜欢的主题，ht">
+<meta name="description" content="In Linux, the API to send signals to process or process group is kill(..), details are as follows:
+codeblock lang:c %&amp;#125; 1#include &amp;#60;signal.h&amp;#62;&amp;#10;int kill(pid_t pid, int signo);&amp;#10;int rai">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用hexo构建博客">
-<meta property="og:url" content="https://vonzhou.github.io/2015/10/20/2015-10-20-Hello-World/index.html">
+<meta property="og:title" content="Sending signals between processes">
+<meta property="og:url" content="https://vonzhou.github.io/2015/10/21/2015-6-4-Sending Signal/index.html">
 <meta property="og:site_name" content="Chown's Blog">
-<meta property="og:description" content="1.安装git和node.js，npm
-2.安装hexo： npm install -g hexo-cli， 在ubuntu12.04上会出现问题，参考这里
-3.安装hexo成功后，可以在本地构建博客系统
-1hexo init myblog&amp;#10;cd myblog&amp;#10;npm install
-4.可以启动本地服务，看到博客的状态了： hexo server
-5.可以安装自己喜欢的主题，ht">
-<meta property="og:updated_time" content="2015-10-21T04:50:17.000Z">
+<meta property="og:description" content="In Linux, the API to send signals to process or process group is kill(..), details are as follows:
+codeblock lang:c %&amp;#125; 1#include &amp;#60;signal.h&amp;#62;&amp;#10;int kill(pid_t pid, int signo);&amp;#10;int rai">
+<meta property="og:image" content="https://vonzhou.github.io/!--￼3-->/images/send_signal.png">
+<meta property="og:updated_time" content="2015-10-21T05:18:20.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用hexo构建博客">
-<meta name="twitter:description" content="1.安装git和node.js，npm
-2.安装hexo： npm install -g hexo-cli， 在ubuntu12.04上会出现问题，参考这里
-3.安装hexo成功后，可以在本地构建博客系统
-1hexo init myblog&amp;#10;cd myblog&amp;#10;npm install
-4.可以启动本地服务，看到博客的状态了： hexo server
-5.可以安装自己喜欢的主题，ht">
+<meta name="twitter:title" content="Sending signals between processes">
+<meta name="twitter:description" content="In Linux, the API to send signals to process or process group is kill(..), details are as follows:
+codeblock lang:c %&amp;#125; 1#include &amp;#60;signal.h&amp;#62;&amp;#10;int kill(pid_t pid, int signo);&amp;#10;int rai">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -79,7 +68,7 @@
 
 
 
-  <title> 使用hexo构建博客 | Chown's Blog </title>
+  <title> Sending signals between processes | Chown's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="default">
@@ -214,7 +203,7 @@
             
             
               
-                使用hexo构建博客
+                Sending signals between processes
               
             
           </h1>
@@ -223,8 +212,8 @@
         <div class="post-meta">
           <span class="post-time">
             Posted on
-            <time itemprop="dateCreated" datetime="2015-10-20T23:07:07+08:00" content="2015-10-20">
-              2015-10-20
+            <time itemprop="dateCreated" datetime="2015-10-21T13:18:20+08:00" content="2015-10-21">
+              2015-10-21
             </time>
           </span>
 
@@ -233,8 +222,8 @@
               &nbsp; | &nbsp; In
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Tech/" itemprop="url" rel="index">
-                    <span itemprop="name">Tech</span>
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
                   </a>
                 </span>
 
@@ -262,24 +251,27 @@
       
 
       
-        <span itemprop="articleBody"><p>1.安装git和node.js，npm</p>
-<p>2.安装hexo： npm install -g hexo-cli， 在ubuntu12.04上会出现问题，参考<a href="https://chrislea.com/2014/07/09/joining-forces-nodesource/" target="_blank" rel="external">这里</a></p>
-<p>3.安装hexo成功后，可以在本地构建博客系统</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init myblog&#10;cd myblog&#10;npm install</span><br></pre></td></tr></table></figure>
-<p>4.可以启动本地服务，看到博客的状态了： hexo server</p>
-<p>5.可以安装自己喜欢的主题，<a href="http://hexo.io/themes/" target="_blank" rel="external">http://hexo.io/themes/</a> 有很多，比如选择next</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd myblog&#10;git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
-<p>6.在_config.yml中配置语言和主题</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">language: default&#10;theme: next</span><br></pre></td></tr></table></figure>
-<p>7.可以hexo new page对应的菜单，如标签，归类，个人主页等等，然后修改theme/next/_config.yml中的menu项</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page &#34;tags&#34;</span><br></pre></td></tr></table></figure>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">menu:&#10;  home: /&#10;  categories: /categories&#10;  about: /about&#10;  archives: /archives&#10;  tags: /tags&#10;  #commonweal: /404.html</span><br></pre></td></tr></table></figure>
-<p>8.配置部署选项，这里使用github</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">deploy:&#10;  type: git&#10;  repo: https://github.com/vonzhou/vonzhou.github.io.git&#10;  branch: master&#10;  message: vonzhou blog deploy using hexo</span><br></pre></td></tr></table></figure>
-<p><strong>注意冒号后面有空格</strong></p>
-<p>9.剩下的配置细节可以慢慢根据自己的情况来完善了。</p>
-<p>至此博客就搭建起来了，看这里 <a href="http://vonzhou.github.io/">http://vonzhou.github.io/</a> 。</p>
-<p>参考<br>1.<a href="http://theme-next.iissnan.com/five-minutes-setup.html" target="_blank" rel="external">5 分钟快速安装NEXT</a><br>2.<a href="https://hexo.io/" target="_blank" rel="external">hexo</a>， <a href="https://github.com/iissnan/hexo-theme-next/wiki" target="_blank" rel="external">Hexo WIKI</a></p>
+        <span itemprop="articleBody"><p>  In Linux, the API to send signals to process or process group is kill(..), details are as follows:</p>
+<figure class="highlight"><figcaption><span>codeblock lang:c %&#125; </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#include &#60;signal.h&#62;&#10;int kill(pid_t pid, int signo);&#10;int raise(int signo);&#10;    Both return: 0 if OK, &#8722;1 on error&#10;    &#10;&#123;% endcodeblock %&#125;</span><br></pre></td></tr></table></figure>
+<p>There are four different conditions for the pid argument to kill.</p>
+<ul>
+<li><p>pid &gt; 0   The signal is sent to the process whose process ID is pid.</p>
+</li>
+<li><p>pid==0    The signal is sent to all processes whose process group ID equals the process group ID of the sender and for which the sender has permission to send the signal. Note that the term all processes excludes an implementation-defined set of system processes. For most UNIX systems, this set of system processes includes the kernel processes and init (pid 1).</p>
+</li>
+<li><p>pid &lt; 0 The signal is sent to all processes whose process group ID equals the absolute value of pid and for which the sender has permission to send the signal. Again, the set of all processes excludes certain system processes, as described earlier.</p>
+</li>
+<li><p>pid==-1 The signal is sent to all processes on the system for which the sender has permission to send the signal. As before, the set of processes excludes certain system processes.</p>
+</li>
+</ul>
+<p>Let’s write a demo….</p>
+<p>The sender code:<br><figure class="highlight"><figcaption><span>codeblock lang:c %&#125; </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#include &#60;stdio.h&#62;&#10;#include &#60;stdlib.h&#62;&#10;#include &#60;signal.h&#62;&#10;#include &#60;sys/types.h&#62;&#10;#include &#60;unistd.h&#62;&#10;&#10;int main(int argc, char *argv[])&#123;&#10;    if(argc != 2)&#123;&#10;        printf(&#34;Usage: signal_sender &#60;pid&#62;\n&#34;);&#10;        exit(0);&#10;    &#125;&#10;    pid_t pid = (pid_t)atoi(argv[1]);&#10;    kill(pid, SIGUSR1);&#10;&#10;    return 0;&#10;&#125; &#10;&#123;% endcodeblock %&#125;</span><br></pre></td></tr></table></figure></p>
+<pre><code>The receiver <span class="tag">code</span>:
+</code></pre><figure class="highlight"><figcaption><span>codeblock lang:c %&#125; </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#include &#60;stdio.h&#62;&#10;#include &#60;stdlib.h&#62;&#10;#include &#60;signal.h&#62;&#10;&#10;static void sig_usr(int);&#10;&#10;int &#10;main(void)&#123;&#10;&#9;if(signal(SIGUSR1,sig_usr) == SIG_ERR)&#123;&#10;&#9;&#9;printf(&#34;cannot catch SIGUSR1!&#34;);&#10;        exit(-1);&#10;    &#125;&#10;&#9;&#10;    for(;;)&#10;&#9;&#9;pause();&#10;&#125;&#10;&#10;static void sig_usr(int signo)&#123;&#10;&#9;if(signo == SIGUSR1)&#10;&#9;&#9;printf(&#34;received SIGUSR1\n&#34;);&#10;    else printf(&#34;other signals\n&#34;);&#10;&#125;&#10;&#10;&#123;% endcodeblock %&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>After run the reciever, we got the pid of it, then the sender can send signal SIGUSR1 to it.Result is ok:</li>
+</ul>
+<p><img src="!--￼3--&gt;/images/send_signal.png" alt="signal_send"></p>
 </span>
       
     </div>
@@ -288,7 +280,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Hexo/" rel="tag">#Hexo</a>
+            <a href="/tags/IPC/" rel="tag">#IPC</a>
+          
+            <a href="/tags/signal/" rel="tag">#signal</a>
           
         </div>
       
@@ -297,12 +291,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2015/10/21/2015-10-13-recall-home-1/" rel="next" title="回忆2009（1）">
+                <i class="fa fa-chevron-left"></i> 回忆2009（1）
+              </a>
+            
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/10/21/2015-9-8-tcpdump-command/" rel="prev" title="tcpdump 常用命令整理">
-                tcpdump 常用命令整理 <i class="fa fa-chevron-right"></i>
+              <a href="/2015/10/21/2015-10-13-Python-read-file/" rel="prev" title="python 读取文件的几种方式">
+                python 读取文件的几种方式 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
