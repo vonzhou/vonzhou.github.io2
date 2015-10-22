@@ -1,0 +1,663 @@
+<!doctype html>
+<html class="theme-next use-motion ">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  
+
+
+<link rel="stylesheet" type="text/css" href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" />
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.2"/>
+
+
+
+
+  <meta name="keywords" content="mininet," />
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=0.4.5.2" />
+
+
+<meta name="description" content="Mininet Everyday Usage启动mininet模拟器 mnmn 默认建立最小尺寸的拓扑，相当于指定 –topo=minimal, 俩主机通过一个OF交换机相连， 使用自带的控制器。命令参数如下：
+1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mininet Everyday Usage">
+<meta property="og:url" content="https://vonzhou.github.io/2015/10/22/2015-10-21-Mininet-Everyday_Usage/index.html">
+<meta property="og:site_name" content="Chown's Blog">
+<meta property="og:description" content="Mininet Everyday Usage启动mininet模拟器 mnmn 默认建立最小尺寸的拓扑，相当于指定 –topo=minimal, 俩主机通过一个OF交换机相连， 使用自带的控制器。命令参数如下：
+1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515">
+<meta property="og:updated_time" content="2015-10-22T00:46:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mininet Everyday Usage">
+<meta name="twitter:description" content="Mininet Everyday Usage启动mininet模拟器 mnmn 默认建立最小尺寸的拓扑，相当于指定 –topo=minimal, 俩主机通过一个OF交换机相连， 使用自带的控制器。命令参数如下：
+1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post'
+  };
+</script>
+
+
+
+  <title> Mininet Everyday Usage | Chown's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Chown's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">人的一切痛苦，本质上都是对自己的无能的愤怒。</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Mininet Everyday Usage
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            Posted on
+            <time itemprop="dateCreated" datetime="2015-10-22T08:46:21+08:00" content="2015-10-22">
+              2015-10-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; In
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/SDN/" itemprop="url" rel="index">
+                    <span itemprop="name">SDN</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h1 id="Mininet_Everyday_Usage">Mininet Everyday Usage</h1><h2 id="启动mininet模拟器_mn">启动mininet模拟器 mn</h2><p>mn 默认建立最小尺寸的拓扑，相当于指定 –topo=minimal, 俩主机通过一个OF交换机相连， 使用自带的控制器。命令参数如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">NAME</span><br><span class="line">       mn - <span class="operator"><span class="keyword">create</span> a Mininet network.</span><br><span class="line"></span><br><span class="line">SYNOPSIS</span><br><span class="line">       mn [options]</span><br><span class="line"></span><br><span class="line">DESCRIPTION</span><br><span class="line">       (<span class="keyword">type</span> mn -h <span class="keyword">for</span> details)</span><br><span class="line"></span><br><span class="line">       The mn utility creates Mininet network <span class="keyword">from</span> the command line. It can <span class="keyword">create</span> parametrized topologies, invoke the Mininet CLI, <span class="keyword">and</span> run tests.</span><br><span class="line"></span><br><span class="line">OPTIONS</span><br><span class="line">       -h, <span class="comment">--help</span></span><br><span class="line">              <span class="keyword">show</span> this <span class="keyword">help</span> message <span class="keyword">and</span> <span class="keyword">exit</span></span><br><span class="line"></span><br><span class="line">       <span class="comment">--switch=SWITCH</span></span><br><span class="line">              <span class="keyword">default</span>|ivs|lxbr|ovs|ovsbr|ovsk|<span class="keyword">user</span>[,param=<span class="keyword">value</span>...]   ovs=OVSSwitch  <span class="keyword">default</span>=OVSSwitch  ovsk=OVSSwitch  lxbr=LinuxBridge <span class="keyword">user</span>=<span class="keyword">User</span>‐</span><br><span class="line">              <span class="keyword">Switch</span> ivs=IVSSwitch ovsbr=OVSBridge</span><br><span class="line"></span><br><span class="line">       <span class="comment">--host=HOST</span></span><br><span class="line">              cfs|proc|rt[,param=<span class="keyword">value</span>...]  rt=CPULimitedHost&#123;<span class="string">'sched'</span>: <span class="string">'rt'</span>&#125; proc=Host cfs=CPULimitedHost&#123;<span class="string">'sched'</span>: <span class="string">'cfs'</span>&#125;</span><br><span class="line"></span><br><span class="line">       <span class="comment">--controller=CONTROLLER</span></span><br><span class="line">              <span class="keyword">default</span>|<span class="keyword">none</span>|nox|ovsc|<span class="keyword">ref</span>|remote|ryu[,param=<span class="keyword">value</span>...]       ovsc=OVSController      <span class="keyword">none</span>=NullController       remote=RemoteController</span><br><span class="line">              <span class="keyword">default</span>=DefaultController nox=NOX ryu=Ryu <span class="keyword">ref</span>=Controller</span><br><span class="line"></span><br><span class="line">       <span class="comment">--link=LINK</span></span><br><span class="line">              <span class="keyword">default</span>|ovs|tc[,param=<span class="keyword">value</span>...] <span class="keyword">default</span>=<span class="keyword">Link</span> ovs=OVSLink tc=TCLink</span><br><span class="line"></span><br><span class="line">       <span class="comment">--topo=TOPO</span></span><br><span class="line">              linear|minimal|reversed|single|torus|tree[,param=<span class="keyword">value</span>  ...]  linear=LinearTopo  reversed=SingleSwitchReversedTopo tree=TreeTopo <span class="keyword">sin</span>‐</span><br><span class="line">              gle=SingleSwitchTopo torus=TorusTopo minimal=MinimalTopo</span><br><span class="line"></span><br><span class="line">       -<span class="keyword">c</span>, <span class="comment">--clean</span></span><br><span class="line">              clean <span class="keyword">and</span> <span class="keyword">exit</span></span><br><span class="line">		<span class="comment">--custom=CUSTOM</span></span><br><span class="line">              <span class="keyword">read</span> custom classes <span class="keyword">or</span> params <span class="keyword">from</span> .py <span class="keyword">file</span>(s)</span><br><span class="line"></span><br><span class="line">       <span class="comment">--test=TEST</span></span><br><span class="line">              cli|<span class="keyword">build</span>|pingall|pingpair|iperf|all|iperfudp|<span class="keyword">none</span></span><br><span class="line"></span><br><span class="line">       -x, <span class="comment">--xterms</span></span><br><span class="line">              spawn xterms <span class="keyword">for</span> <span class="keyword">each</span> node</span><br><span class="line"></span><br><span class="line">       -<span class="keyword">i</span> IPBASE, <span class="comment">--ipbase=IPBASE</span></span><br><span class="line">              base IP address <span class="keyword">for</span> <span class="keyword">hosts</span></span><br><span class="line"></span><br><span class="line">       <span class="comment">--mac  automatically set host MACs</span></span><br><span class="line"></span><br><span class="line">       <span class="comment">--arp  set all-pairs ARP entries</span></span><br><span class="line"></span><br><span class="line">       -v VERBOSITY, <span class="comment">--verbosity=VERBOSITY</span></span><br><span class="line">              info|<span class="keyword">warning</span>|<span class="keyword">critical</span>|<span class="keyword">error</span>|debug|<span class="keyword">output</span></span><br><span class="line"></span><br><span class="line">       <span class="comment">--innamespace</span></span><br><span class="line">              sw <span class="keyword">and</span> ctrl <span class="keyword">in</span> namespace?</span><br><span class="line"></span><br><span class="line">       <span class="comment">--listenport=LISTENPORT</span></span><br><span class="line">              base port <span class="keyword">for</span> passive <span class="keyword">switch</span> listening</span><br><span class="line"></span><br><span class="line">       <span class="comment">--nolistenport</span></span><br><span class="line">              don<span class="string">'t use passive listening port</span><br><span class="line"></span><br><span class="line">       --pre=PRE</span><br><span class="line">              CLI script to run before tests</span><br><span class="line">       --post=POST</span><br><span class="line">              CLI script to run after tests</span><br><span class="line"></span><br><span class="line">       --pin  pin hosts to CPU cores (requires --host cfs or --host rt)</span><br><span class="line"></span><br><span class="line">       --nat  adds a NAT to the topology that connects Mininet hosts to the physical network. Warning: This may route any traffic  on  the  machine</span><br><span class="line">              that uses Mininet'</span>s IP subnet <span class="keyword">into</span> the Mininet network. <span class="keyword">If</span> you need <span class="keyword">to</span> <span class="keyword">change</span> Mininet<span class="string">'s IP subnet, see the --ipbase option.</span><br><span class="line"></span><br><span class="line">       --version</span><br><span class="line">              prints the version and exits</span><br><span class="line"></span><br><span class="line">       --cluster=server1,server2...</span><br><span class="line">              run on multiple servers (experimental!)</span><br><span class="line"></span><br><span class="line">       --placement=block|random</span><br><span class="line">              node placement for --cluster (experimental!)</span></span></span><br></pre></td></tr></table></figure>
+<h2 id="Mininet_CLI常用命令：">Mininet CLI常用命令：</h2><p>nodes #展现节点</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; nodes</span><br><span class="line">available nodes are: </span><br><span class="line">c0 <span class="tag">h1</span> <span class="tag">h2</span> s1</span><br></pre></td></tr></table></figure>
+<p>net # 展现网络链接</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; net</span><br><span class="line">h1 h1-<span class="string">eth0:</span>s1-eth1</span><br><span class="line">h2 h2-<span class="string">eth0:</span>s1-eth2</span><br><span class="line">s1 <span class="string">lo:</span>  s1-<span class="string">eth1:</span>h1-eth0 s1-<span class="string">eth2:</span>h2-eth0</span><br><span class="line">c0</span><br></pre></td></tr></table></figure>
+<p>dump #各个节点的信息</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; dump</span><br><span class="line">&lt;Host h1: h1-eth0:<span class="number">10.0</span><span class="number">.0</span><span class="number">.1</span> pid=<span class="number">3088</span>&gt; </span><br><span class="line">&lt;Host h2: h2-eth0:<span class="number">10.0</span><span class="number">.0</span><span class="number">.2</span> pid=<span class="number">3090</span>&gt; </span><br><span class="line">&lt;OVSSwitch s1: lo:<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>,s1-eth1:None,s1-eth2:None pid=<span class="number">3095</span>&gt; </span><br><span class="line">&lt;Controller c0: <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6633</span> pid=<span class="number">3081</span>&gt;</span><br></pre></td></tr></table></figure>
+<p>如果第一个参数是主机名，交换机名，或者控制器名，那么表示后面的命令在对应的节点上执行。比如 h1 ifconfig -a 会显示出h1主机网络命名空间的接口信息。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; h1 ifconfig -a</span><br><span class="line">h1-eth0   Link encap:Ethernet  HWaddr <span class="number">4</span>a:<span class="number">2</span>b:e3:ff:d5:<span class="number">48</span>  </span><br><span class="line">          inet addr:<span class="number">10.0</span><span class="number">.0</span><span class="number">.1</span>  Bcast:<span class="number">10.255</span><span class="number">.255</span><span class="number">.255</span>  Mask:<span class="number">255.0</span><span class="number">.0</span><span class="number">.0</span></span><br><span class="line">          inet6 addr: fe80::<span class="number">482</span>b:e3ff:feff:d548/<span class="number">64</span> Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:<span class="number">1500</span>  Metric:<span class="number">1</span></span><br><span class="line">          RX packets:<span class="number">40</span> errors:<span class="number">0</span> dropped:<span class="number">0</span> overruns:<span class="number">0</span> frame:<span class="number">0</span></span><br><span class="line">          TX packets:<span class="number">14</span> errors:<span class="number">0</span> dropped:<span class="number">0</span> overruns:<span class="number">0</span> carrier:<span class="number">0</span></span><br><span class="line">          collisions:<span class="number">0</span> txqueuelen:<span class="number">1000</span> </span><br><span class="line">          RX bytes:<span class="number">5659</span> (<span class="number">5.6</span> KB)  TX bytes:<span class="number">1028</span> (<span class="number">1.0</span> KB)</span><br><span class="line"></span><br><span class="line">lo        Link encap:Local Loopback  </span><br><span class="line">          inet addr:<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>  Mask:<span class="number">255.0</span><span class="number">.0</span><span class="number">.0</span></span><br><span class="line">          inet6 addr: ::<span class="number">1</span>/<span class="number">128</span> Scope:Host</span><br><span class="line">          UP LOOPBACK RUNNING  MTU:<span class="number">16436</span>  Metric:<span class="number">1</span></span><br><span class="line">          RX packets:<span class="number">0</span> errors:<span class="number">0</span> dropped:<span class="number">0</span> overruns:<span class="number">0</span> frame:<span class="number">0</span></span><br><span class="line">          TX packets:<span class="number">0</span> errors:<span class="number">0</span> dropped:<span class="number">0</span> overruns:<span class="number">0</span> carrier:<span class="number">0</span></span><br><span class="line">          collisions:<span class="number">0</span> txqueuelen:<span class="number">0</span> </span><br><span class="line">          RX bytes:<span class="number">0</span> (<span class="number">0.0</span> B)  TX bytes:<span class="number">0</span> (<span class="number">0.0</span> B)</span><br></pre></td></tr></table></figure>
+<h2 id=":q">:q</h2><p>:qqq</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mininet/" rel="tag">#mininet</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/21/2015-10-21-Create-a-learning-switch-in-pox/" rel="next" title="基于POX实现L2 learning switch模块">
+                <i class="fa fa-chevron-left"></i> 基于POX实现L2 learning switch模块
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/10/22/2015-10-22-linux-find-command/" rel="prev" title="Linux find command">
+                Linux find command <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+        
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table Of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/assets/vonzhou1.jpg" alt="vonzhou" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">vonzhou</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">categories</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-name">tags</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mininet_Everyday_Usage"><span class="nav-number">1.</span> <span class="nav-text">Mininet Everyday Usage</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启动mininet模拟器_mn"><span class="nav-number">1.1.</span> <span class="nav-text">启动mininet模拟器 mn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mininet_CLI常用命令："><span class="nav-number">1.2.</span> <span class="nav-text">Mininet CLI常用命令：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#:q"><span class="nav-number">1.3.</span> <span class="nav-text">:q</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+      
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2015</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">vonzhou</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.2"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.2"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.2" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.2"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+
+      motionIntegrator.bootstrap();
+    });
+  </script>
+
+  
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

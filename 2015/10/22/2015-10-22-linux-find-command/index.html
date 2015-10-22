@@ -34,7 +34,7 @@
 
 
 
-  <meta name="keywords" content="IPC,signal," />
+  <meta name="keywords" content="find,linux command," />
 
 
 
@@ -43,19 +43,16 @@
   <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=0.4.5.2" />
 
 
-<meta name="description" content="In Linux, the API to send signals to process or process group is kill(..), details are as follows:
-1234#include &amp;lt;signal.h&amp;gt;int kill(pid_t pid, int signo);int raise(int signo);    Both return: 0 i">
+<meta name="description" content="123456789-name pattern            Base of file name (the path with the leading directories removed) matches shell pattern pattern.  The metacharacters (`*&apos;,  `?&apos;,  and            `[]&apos;)  match  a `.&apos; a">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Sending signals between processes">
-<meta property="og:url" content="https://vonzhou.github.io/2015/10/21/2015-6-4-Sending Signal/index.html">
+<meta property="og:title" content="Linux find command">
+<meta property="og:url" content="https://vonzhou.github.io/2015/10/22/2015-10-22-linux-find-command/index.html">
 <meta property="og:site_name" content="Chown's Blog">
-<meta property="og:description" content="In Linux, the API to send signals to process or process group is kill(..), details are as follows:
-1234#include &amp;lt;signal.h&amp;gt;int kill(pid_t pid, int signo);int raise(int signo);    Both return: 0 i">
-<meta property="og:updated_time" content="2015-10-21T05:34:11.000Z">
+<meta property="og:description" content="123456789-name pattern            Base of file name (the path with the leading directories removed) matches shell pattern pattern.  The metacharacters (`*&apos;,  `?&apos;,  and            `[]&apos;)  match  a `.&apos; a">
+<meta property="og:updated_time" content="2015-10-22T00:55:05.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sending signals between processes">
-<meta name="twitter:description" content="In Linux, the API to send signals to process or process group is kill(..), details are as follows:
-1234#include &amp;lt;signal.h&amp;gt;int kill(pid_t pid, int signo);int raise(int signo);    Both return: 0 i">
+<meta name="twitter:title" content="Linux find command">
+<meta name="twitter:description" content="123456789-name pattern            Base of file name (the path with the leading directories removed) matches shell pattern pattern.  The metacharacters (`*&apos;,  `?&apos;,  and            `[]&apos;)  match  a `.&apos; a">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -67,7 +64,7 @@
 
 
 
-  <title> Sending signals between processes | Chown's Blog </title>
+  <title> Linux find command | Chown's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="default">
@@ -202,7 +199,7 @@
             
             
               
-                Sending signals between processes
+                Linux find command
               
             
           </h1>
@@ -211,8 +208,8 @@
         <div class="post-meta">
           <span class="post-time">
             Posted on
-            <time itemprop="dateCreated" datetime="2015-10-21T13:34:11+08:00" content="2015-10-21">
-              2015-10-21
+            <time itemprop="dateCreated" datetime="2015-10-22T08:55:05+08:00" content="2015-10-22">
+              2015-10-22
             </time>
           </span>
 
@@ -250,26 +247,7 @@
       
 
       
-        <span itemprop="articleBody"><p>  In Linux, the API to send signals to process or process group is kill(..), details are as follows:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">kill</span><span class="params">(pid_t pid, <span class="keyword">int</span> signo)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">raise</span><span class="params">(<span class="keyword">int</span> signo)</span></span>;</span><br><span class="line">    Both <span class="keyword">return</span>: <span class="number">0</span> <span class="keyword">if</span> OK, −<span class="number">1</span> on error</span><br></pre></td></tr></table></figure>
-<p>There are four different conditions for the pid argument to kill.</p>
-<ul>
-<li><p>pid &gt; 0   The signal is sent to the process whose process ID is pid.</p>
-</li>
-<li><p>pid==0    The signal is sent to all processes whose process group ID equals the process group ID of the sender and for which the sender has permission to send the signal. Note that the term all processes excludes an implementation-defined set of system processes. For most UNIX systems, this set of system processes includes the kernel processes and init (pid 1).</p>
-</li>
-<li><p>pid &lt; 0 The signal is sent to all processes whose process group ID equals the absolute value of pid and for which the sender has permission to send the signal. Again, the set of all processes excludes certain system processes, as described earlier.</p>
-</li>
-<li><p>pid==-1 The signal is sent to all processes on the system for which the sender has permission to send the signal. As before, the set of processes excludes certain system processes.</p>
-</li>
-</ul>
-<p>Let’s write a demo….</p>
-<p>The sender code:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(argc != <span class="number">2</span>)&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Usage: signal_sender &lt;pid&gt;\n"</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">pid_t</span> pid = (<span class="keyword">pid_t</span>)atoi(argv[<span class="number">1</span>]);</span><br><span class="line">    kill(pid, SIGUSR1);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<pre><code>The receiver <span class="tag">code</span>:
-</code></pre><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sig_usr</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> </span><br><span class="line"><span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(signal(SIGUSR1,sig_usr) == SIG_ERR)&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"cannot catch SIGUSR1!"</span>);</span><br><span class="line">        <span class="built_in">exit</span>(-<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    <span class="keyword">for</span>(;;)</span><br><span class="line">		pause();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sig_usr</span><span class="params">(<span class="keyword">int</span> signo)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(signo == SIGUSR1)</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"received SIGUSR1\n"</span>);</span><br><span class="line">    <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">"other signals\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>After run the reciever, we got the pid of it, then the sender can send signal SIGUSR1 to it.Result is ok:</li>
-</ul>
+        <span itemprop="articleBody"><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-<span class="property">name</span> pattern</span><br><span class="line">            Base <span class="keyword">of</span> <span class="type">file</span> <span class="property">name</span> (<span class="keyword">the</span> path <span class="keyword">with</span> <span class="keyword">the</span> leading directories removed) matches shell pattern pattern.  The metacharacters (`*',  `?',  <span class="keyword">and</span></span><br><span class="line">            `[]')  match  a `.' <span class="keyword">at</span> <span class="keyword">the</span> start <span class="keyword">of</span> <span class="keyword">the</span> base <span class="property">name</span> (this <span class="keyword">is</span> a change <span class="keyword">in</span> findutils-<span class="number">4.2</span><span class="number">.2</span>; see section STANDARDS CONFORMANCE <span class="keyword">below</span>).  To</span><br><span class="line">            ignore a directory <span class="keyword">and</span> <span class="keyword">the</span> files under <span class="keyword">it</span>, use -prune; see an example <span class="keyword">in</span> <span class="keyword">the</span> description <span class="keyword">of</span> -path.   Braces  are  <span class="keyword">not</span>  recognised  <span class="keyword">as</span></span><br><span class="line">            being  special, despite <span class="keyword">the</span> fact <span class="keyword">that</span> <span class="keyword">some</span> shells including Bash imbue braces <span class="keyword">with</span> a special meaning <span class="keyword">in</span> shell patterns.  The filename</span><br><span class="line">            matching <span class="keyword">is</span> performed <span class="keyword">with</span> <span class="keyword">the</span> use <span class="keyword">of</span> <span class="keyword">the</span> fnmatch(<span class="number">3</span>) library function.   Don't forget <span class="keyword">to</span> enclose <span class="keyword">the</span> pattern <span class="keyword">in</span> quotes  <span class="keyword">in</span>  order  <span class="keyword">to</span></span><br><span class="line">            protect <span class="keyword">it</span> <span class="keyword">from</span> expansion <span class="keyword">by</span> <span class="keyword">the</span> shell.</span><br><span class="line">            </span><br><span class="line">      q</span><br></pre></td></tr></table></figure>
 </span>
       
     </div>
@@ -278,9 +256,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/IPC/" rel="tag">#IPC</a>
+            <a href="/tags/find/" rel="tag">#find</a>
           
-            <a href="/tags/signal/" rel="tag">#signal</a>
+            <a href="/tags/linux-command/" rel="tag">#linux command</a>
           
         </div>
       
@@ -289,16 +267,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/10/21/2015-10-13-Python-read-file/" rel="next" title="python 读取文件的几种方式">
-                <i class="fa fa-chevron-left"></i> python 读取文件的几种方式
+              <a href="/2015/10/22/2015-10-21-Mininet-Everyday_Usage/" rel="next" title="Mininet Everyday Usage">
+                <i class="fa fa-chevron-left"></i> Mininet Everyday Usage
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/10/21/2015-10-21-Create-a-learning-switch-in-pox/" rel="prev" title="基于POX实现L2 learning switch模块">
-                基于POX实现L2 learning switch模块 <i class="fa fa-chevron-right"></i>
+              <a href="/2015/10/22/2015-10-22-parse-packet-in-pox/" rel="prev" title="在POX中操作数据包">
+                在POX中操作数据包 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

@@ -34,7 +34,7 @@
 
 
 
-  <meta name="keywords" content="mininet," />
+  <meta name="keywords" content="mininet,pox," />
 
 
 
@@ -43,31 +43,22 @@
   <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico?v=0.4.5.2" />
 
 
-<meta name="description" content="Mininet Everyday Usagesudo mn
-默认建立最小尺寸的拓扑，相当于指定 –topo=minimal, 俩主机通过一个OF交换机相连， 使用自带的控制器。
-Mininet CLI常用命令：nodes #展现节点
-123mininet&amp;gt; nodesavailable nodes are: c0 h1 h2 s1
-net # 展现网络链接
-12345mininet&amp;gt;">
+<meta name="description" content="想在SDN控制器中做点事情，必须要能够解析上来的packet，在POX中利用pox.lib.packet中的组件很方便，重点是熟悉各个协议的字段。
+各个协议类继承了packet_base, 里面的find 方法很实用，在解析packet的时候， find(‘protocol’)就会解析得到对应协议的包。
+解析到传输层后的payload类型是str，我们可以探测里面的内容，但是长度不一定是整个pac">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mininet Everyday Usage">
-<meta property="og:url" content="https://vonzhou.github.io/2015/10/21/2015-10-21-Mininet-Everyday_Usage/index.html">
+<meta property="og:title" content="在POX中操作数据包">
+<meta property="og:url" content="https://vonzhou.github.io/2015/10/22/2015-10-22-parse-packet-in-pox/index.html">
 <meta property="og:site_name" content="Chown's Blog">
-<meta property="og:description" content="Mininet Everyday Usagesudo mn
-默认建立最小尺寸的拓扑，相当于指定 –topo=minimal, 俩主机通过一个OF交换机相连， 使用自带的控制器。
-Mininet CLI常用命令：nodes #展现节点
-123mininet&amp;gt; nodesavailable nodes are: c0 h1 h2 s1
-net # 展现网络链接
-12345mininet&amp;gt;">
-<meta property="og:updated_time" content="2015-10-21T09:40:00.000Z">
+<meta property="og:description" content="想在SDN控制器中做点事情，必须要能够解析上来的packet，在POX中利用pox.lib.packet中的组件很方便，重点是熟悉各个协议的字段。
+各个协议类继承了packet_base, 里面的find 方法很实用，在解析packet的时候， find(‘protocol’)就会解析得到对应协议的包。
+解析到传输层后的payload类型是str，我们可以探测里面的内容，但是长度不一定是整个pac">
+<meta property="og:updated_time" content="2015-10-22T09:17:30.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mininet Everyday Usage">
-<meta name="twitter:description" content="Mininet Everyday Usagesudo mn
-默认建立最小尺寸的拓扑，相当于指定 –topo=minimal, 俩主机通过一个OF交换机相连， 使用自带的控制器。
-Mininet CLI常用命令：nodes #展现节点
-123mininet&amp;gt; nodesavailable nodes are: c0 h1 h2 s1
-net # 展现网络链接
-12345mininet&amp;gt;">
+<meta name="twitter:title" content="在POX中操作数据包">
+<meta name="twitter:description" content="想在SDN控制器中做点事情，必须要能够解析上来的packet，在POX中利用pox.lib.packet中的组件很方便，重点是熟悉各个协议的字段。
+各个协议类继承了packet_base, 里面的find 方法很实用，在解析packet的时候， find(‘protocol’)就会解析得到对应协议的包。
+解析到传输层后的payload类型是str，我们可以探测里面的内容，但是长度不一定是整个pac">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -79,7 +70,7 @@ net # 展现网络链接
 
 
 
-  <title> Mininet Everyday Usage | Chown's Blog </title>
+  <title> 在POX中操作数据包 | Chown's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="default">
@@ -214,7 +205,7 @@ net # 展现网络链接
             
             
               
-                Mininet Everyday Usage
+                在POX中操作数据包
               
             
           </h1>
@@ -223,8 +214,8 @@ net # 展现网络链接
         <div class="post-meta">
           <span class="post-time">
             Posted on
-            <time itemprop="dateCreated" datetime="2015-10-21T17:40:00+08:00" content="2015-10-21">
-              2015-10-21
+            <time itemprop="dateCreated" datetime="2015-10-22T17:17:30+08:00" content="2015-10-22">
+              2015-10-22
             </time>
           </span>
 
@@ -262,16 +253,11 @@ net # 展现网络链接
       
 
       
-        <span itemprop="articleBody"><h1 id="Mininet_Everyday_Usage">Mininet Everyday Usage</h1><p>sudo mn</p>
-<p>默认建立最小尺寸的拓扑，相当于指定 –topo=minimal, 俩主机通过一个OF交换机相连， 使用自带的控制器。</p>
-<h2 id="Mininet_CLI常用命令：">Mininet CLI常用命令：</h2><p>nodes #展现节点</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; nodes</span><br><span class="line">available nodes are: </span><br><span class="line">c0 <span class="tag">h1</span> <span class="tag">h2</span> s1</span><br></pre></td></tr></table></figure>
-<p>net # 展现网络链接</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; net</span><br><span class="line">h1 h1-<span class="string">eth0:</span>s1-eth1</span><br><span class="line">h2 h2-<span class="string">eth0:</span>s1-eth2</span><br><span class="line">s1 <span class="string">lo:</span>  s1-<span class="string">eth1:</span>h1-eth0 s1-<span class="string">eth2:</span>h2-eth0</span><br><span class="line">c0</span><br></pre></td></tr></table></figure>
-<p>dump #各个节点的信息</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; dump</span><br><span class="line">&lt;Host h1: h1-eth0:<span class="number">10.0</span><span class="number">.0</span><span class="number">.1</span> pid=<span class="number">3088</span>&gt; </span><br><span class="line">&lt;Host h2: h2-eth0:<span class="number">10.0</span><span class="number">.0</span><span class="number">.2</span> pid=<span class="number">3090</span>&gt; </span><br><span class="line">&lt;OVSSwitch s1: lo:<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>,s1-eth1:None,s1-eth2:None pid=<span class="number">3095</span>&gt; </span><br><span class="line">&lt;Controller c0: <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6633</span> pid=<span class="number">3081</span>&gt;</span><br></pre></td></tr></table></figure>
-<p>如果第一个参数是主机名，交换机名，或者控制器名，那么表示后面的命令在对应的节点上执行。比如 h1 ifconfig -a 会显示出h1主机网络命名空间的接口信息。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">mininet&gt; h1 ifconfig -a</span><br><span class="line">h1-eth0   Link encap:Ethernet  HWaddr <span class="number">4</span>a:<span class="number">2</span>b:e3:ff:d5:<span class="number">48</span>  </span><br><span class="line">          inet addr:<span class="number">10.0</span><span class="number">.0</span><span class="number">.1</span>  Bcast:<span class="number">10.255</span><span class="number">.255</span><span class="number">.255</span>  Mask:<span class="number">255.0</span><span class="number">.0</span><span class="number">.0</span></span><br><span class="line">          inet6 addr: fe80::<span class="number">482</span>b:e3ff:feff:d548/<span class="number">64</span> Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:<span class="number">1500</span>  Metric:<span class="number">1</span></span><br><span class="line">          RX packets:<span class="number">40</span> errors:<span class="number">0</span> dropped:<span class="number">0</span> overruns:<span class="number">0</span> frame:<span class="number">0</span></span><br><span class="line">          TX packets:<span class="number">14</span> errors:<span class="number">0</span> dropped:<span class="number">0</span> overruns:<span class="number">0</span> carrier:<span class="number">0</span></span><br><span class="line">          collisions:<span class="number">0</span> txqueuelen:<span class="number">1000</span> </span><br><span class="line">          RX bytes:<span class="number">5659</span> (<span class="number">5.6</span> KB)  TX bytes:<span class="number">1028</span> (<span class="number">1.0</span> KB)</span><br><span class="line"></span><br><span class="line">lo        Link encap:Local Loopback  </span><br><span class="line">          inet addr:<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>  Mask:<span class="number">255.0</span><span class="number">.0</span><span class="number">.0</span></span><br><span class="line">          inet6 addr: ::<span class="number">1</span>/<span class="number">128</span> Scope:Host</span><br><span class="line">          UP LOOPBACK RUNNING  MTU:<span class="number">16436</span>  Metric:<span class="number">1</span></span><br><span class="line">          RX packets:<span class="number">0</span> errors:<span class="number">0</span> dropped:<span class="number">0</span> overruns:<span class="number">0</span> frame:<span class="number">0</span></span><br><span class="line">          TX packets:<span class="number">0</span> errors:<span class="number">0</span> dropped:<span class="number">0</span> overruns:<span class="number">0</span> carrier:<span class="number">0</span></span><br><span class="line">          collisions:<span class="number">0</span> txqueuelen:<span class="number">0</span> </span><br><span class="line">          RX bytes:<span class="number">0</span> (<span class="number">0.0</span> B)  TX bytes:<span class="number">0</span> (<span class="number">0.0</span> B)</span><br></pre></td></tr></table></figure>
+        <span itemprop="articleBody"><p>想在SDN控制器中做点事情，必须要能够解析上来的packet，在POX中利用pox.lib.packet中的组件很方便，重点是熟悉各个协议的字段。</p>
+<p>各个协议类继承了<strong>packet_base</strong>, 里面的find 方法很实用，在解析packet的时候， find(‘protocol’)就会解析得到对应协议的包。</p>
+<p>解析到传输层后的payload类型是str，我们可以探测里面的内容，但是长度不一定是整个packet（可以修改）。</p>
+<p>下面是我解析UDP包的过程，得到里面的内容之后，就可以对应设计自己的策略。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">spy_udp_packet</span><span class="params">(self, packet)</span>:</span></span><br><span class="line">    ip = packet.find(<span class="string">'ipv4'</span>)</span><br><span class="line">    <span class="keyword">if</span> ip <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    log.debug(<span class="string">'protocol=&#123;&#125;,srcip=&#123;&#125;,dstip=&#123;&#125;'</span>.format(ip.protocol, ip.srcip, ip.dstip))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># we only care about UDP packet</span></span><br><span class="line">    udp_packet = ip.find(<span class="string">'udp'</span>)</span><br><span class="line">    <span class="keyword">if</span> udp_packet <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">      <span class="keyword">return</span> </span><br><span class="line">    log.debug(<span class="string">'srcport=&#123;&#125;,dstport=&#123;&#125;'</span>.format(udp_packet.srcport, udp_packet.dstport))</span><br><span class="line">    udp_payload = udp_packet.payload </span><br><span class="line">    <span class="comment"># The payload include a '\n' , and its type is &lt;type 'str'&gt;</span></span><br><span class="line">    log.debug(<span class="string">'udp playload(len=&#123;&#125;): &#123;&#125;,type=&#123;&#125;'</span>.format(len(udp_payload), str(udp_payload), type(udp_payload)))</span><br></pre></td></tr></table></figure>
 </span>
       
     </div>
@@ -282,6 +268,8 @@ net # 展现网络链接
           
             <a href="/tags/mininet/" rel="tag">#mininet</a>
           
+            <a href="/tags/pox/" rel="tag">#pox</a>
+          
         </div>
       
 
@@ -289,8 +277,8 @@ net # 展现网络链接
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/10/21/2015-10-21-Create-a-learning-switch-in-pox/" rel="next" title="基于POX实现L2 learning switch模块">
-                <i class="fa fa-chevron-left"></i> 基于POX实现L2 learning switch模块
+              <a href="/2015/10/22/2015-10-22-linux-find-command/" rel="next" title="Linux find command">
+                <i class="fa fa-chevron-left"></i> Linux find command
               </a>
             
           </div>
@@ -360,7 +348,7 @@ net # 展现网络链接
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -374,7 +362,7 @@ net # 展现网络链接
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-count">18</span>
               <span class="site-state-item-name">tags</span>
               </a>
           </div>
@@ -402,7 +390,7 @@ net # 展现网络链接
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mininet_Everyday_Usage"><span class="nav-number">1.</span> <span class="nav-text">Mininet Everyday Usage</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mininet_CLI常用命令："><span class="nav-number">1.1.</span> <span class="nav-text">Mininet CLI常用命令：</span></a></li></ol></li></ol></div>
+              <p class="post-toc-empty">This post does not have a Table Of Contents</p>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
